@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tasktonic/main.dart';
+import 'package:tasktonic/wrapper.dart';
 
 void main() async {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

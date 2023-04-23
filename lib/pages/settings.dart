@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../providers/android_info.dart';
-import '../utilities/android_info.dart';
+import '../provider.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -17,8 +16,8 @@ class SettingsPage extends ConsumerWidget {
     ).launch();
   }
 
-  void _goToLanguageSettings(BuildContext context, bool perAppLocale) {
-    if (perAppLocale) {
+  void _goToLanguageSettings(BuildContext context) {
+    if (context.perAppLocale) {
       _openAndroidAppLocaleSettings();
     } else {
       context.go("/settings/language");
@@ -28,9 +27,6 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     context.locale; // force rebuild when locale changes
-
-    final androidInfo = ref.read(androidInfoProvider).requireValue;
-    final perAppLocale = hasPerAppLocale(androidInfo);
 
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +38,7 @@ class SettingsPage extends ConsumerWidget {
             leading: const Icon(Icons.language),
             title: Text('settings.languages'.tr()),
             onTap: () {
-              _goToLanguageSettings(context, perAppLocale);
+              _goToLanguageSettings(context);
             },
           ),
         ],

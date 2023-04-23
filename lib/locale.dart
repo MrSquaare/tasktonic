@@ -2,9 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
 
 class LocaleListenerWidget extends StatefulWidget {
-  const LocaleListenerWidget({super.key, required this.child});
+  const LocaleListenerWidget({
+    super.key,
+    required this.child,
+    this.perAppLocale = false,
+  });
 
   final Widget child;
+  final bool perAppLocale;
 
   @override
   State<LocaleListenerWidget> createState() => _LocaleListenerWidgetState();
@@ -22,11 +27,13 @@ class _LocaleListenerWidgetState extends State<LocaleListenerWidget>
   void didChangeLocales(List<Locale>? locales) {
     super.didChangeLocales(locales);
 
+    if (widget.perAppLocale == false) return;
+
     final locale = locales?.first;
 
-    if (locale != null) {
-      context.setLocale(Locale(locale.languageCode));
-    }
+    if (locale == null) return;
+
+    context.setLocale(Locale(locale.languageCode));
   }
 
   @override

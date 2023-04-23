@@ -1,12 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'locale.dart';
-import 'providers/android_info.dart';
 import 'router.dart';
-import 'screens/loading.dart';
 import 'utilities/android_info.dart';
+import 'wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,57 +16,17 @@ void main() async {
   runApp(
     MyAppWrapper(
       perAppLocale: perAppLocale,
-      child: LocaleListenerWidget(
-        child: MyApp(),
-      ),
+      child: MyApp(),
     ),
   );
 }
 
-class MyAppWrapper extends StatelessWidget {
-  const MyAppWrapper({
-    super.key,
-    required this.child,
-    this.perAppLocale = false,
-    this.providerOverrides = const [],
-    this.providerObservers,
-  });
-
-  final Widget child;
-  final bool perAppLocale;
-  final List<Override> providerOverrides;
-  final List<ProviderObserver>? providerObservers;
-
-  @override
-  Widget build(BuildContext context) {
-    return ProviderScope(
-      overrides: providerOverrides,
-      observers: providerObservers,
-      child: EasyLocalization(
-        path: 'assets/translations',
-        supportedLocales: const [Locale('en'), Locale('fr')],
-        fallbackLocale: const Locale('en'),
-        saveLocale: perAppLocale == false,
-        child: child,
-      ),
-    );
-  }
-}
-
-class MyApp extends ConsumerWidget with WidgetsBindingObserver {
+class MyApp extends StatelessWidget with WidgetsBindingObserver {
   MyApp({super.key});
-
-  bool _isAppReady(WidgetRef ref) {
-    final androidInfo = ref.watch(androidInfoProvider);
-
-    return androidInfo.isLoading == false;
-  }
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isAppReady = _isAppReady(ref);
-
+  Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'TaskTonic',
       theme: ThemeData(
@@ -88,9 +45,6 @@ class MyApp extends ConsumerWidget with WidgetsBindingObserver {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      builder: (context, child) {
-        return isAppReady ? child! : const LoadingScreen();
-      },
     );
   }
 }
