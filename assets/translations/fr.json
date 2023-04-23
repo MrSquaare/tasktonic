@@ -4,12 +4,12 @@
     "settings": "Paramètres"
   },
   "home": {
-    "title": "Ma Page D'Accueil",
-    "counter_text": "Vous avez poussé le bouton ce nombre de fois:",
+    "title": "Accueil",
+    "counter_text": "Vous avez poussé le bouton ce nombre de fois :",
     "increment": "Incrémenter"
   },
   "settings": {
-    "title": "Ma Page De Paramètres",
+    "title": "Paramètres",
     "languages": "Langages",
     "language": {
       "title": "Sélectionner une langue"
