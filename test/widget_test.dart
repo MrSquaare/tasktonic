@@ -18,7 +18,7 @@ void main() async {
 
       // Build our app and trigger a frame.
       await tester.pumpWidget(
-        MyAppWrappers(
+        MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -43,7 +43,7 @@ void main() async {
 
       // Build our app and trigger a frame.
       await tester.pumpWidget(
-        MyAppWrappers(
+        MyAppWrapper(
           child: MyApp(),
         ),
       );
