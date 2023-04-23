@@ -1,0 +1,18 @@
+{
+  "navigation": {
+    "home": "Home",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "Home",
+    "counter_text": "You have pushed the button this many times:",
+    "increment": "Increment"
+  },
+  "settings": {
+    "title": "Settings",
+    "languages": "Languages",
+    "language": {
+      "title": "Select a language"
+    }
+  }
+}

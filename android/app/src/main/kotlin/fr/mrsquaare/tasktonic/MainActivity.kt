@@ -1,4 +1,4 @@
-package com.example.tasktonic
+package fr.mrsquaare.tasktonic
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,0 +1,18 @@
+{
+  "navigation": {
+    "home": "Accueil",
+    "settings": "Paramètres"
+  },
+  "home": {
+    "title": "Accueil",
+    "counter_text": "Vous avez poussé le bouton ce nombre de fois :",
+    "increment": "Incrémenter"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "languages": "Langages",
+    "language": {
+      "title": "Sélectionner une langue"
+    }
+  }
+}

@@ -1,9 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tasktonic">
+    package="fr.mrsquaare.tasktonic">
    <application
-        android:label="tasktonic"
+        android:label="TaskTonic"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:localeConfig="@xml/locale_config">
         <activity
             android:name=".MainActivity"
             android:exported="true"
