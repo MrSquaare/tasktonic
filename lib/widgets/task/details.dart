@@ -13,7 +13,7 @@ class TaskDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return <Widget>[
       Text(task.name).fontSize(24).bold().padding(bottom: 8),
-      Text(task.description ?? "task_details.no_description".tr()),
+      Text(task.description ?? 'task_details.no_description'.tr()),
     ].toColumn(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,

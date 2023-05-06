@@ -18,7 +18,7 @@ final GlobalKey<NavigatorState> _shellNavigatorKey =
 
 final router = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: "/",
+  initialLocation: '/',
   routes: [
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
@@ -28,7 +28,7 @@ final router = GoRouter(
       routes: [
         GoRoute(
           parentNavigatorKey: _shellNavigatorKey,
-          path: "/",
+          path: '/',
           pageBuilder: (context, state) {
             return const NoTransitionPage(
               child: HomePage(),
@@ -38,7 +38,7 @@ final router = GoRouter(
         ),
         GoRoute(
           parentNavigatorKey: _shellNavigatorKey,
-          path: "/settings",
+          path: '/settings',
           pageBuilder: (context, state) {
             return const NoTransitionPage(
               child: SettingsPage(),
@@ -47,7 +47,7 @@ final router = GoRouter(
           routes: [
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
-              path: "language",
+              path: 'language',
               builder: (context, state) {
                 return const LanguageSettingsScreen();
               },
@@ -58,16 +58,16 @@ final router = GoRouter(
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
-      path: "/task/add",
+      path: '/task/add',
       builder: (context, state) {
         return AddTaskScreen();
       },
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
-      path: "/task/:id",
+      path: '/task/:id',
       pageBuilder: (context, state) {
-        final taskId = state.params["id"]!;
+        final taskId = state.params['id']!;
         final taskIndex = int.parse(taskId);
 
         return ModalBottomSheetPage(
@@ -78,9 +78,9 @@ final router = GoRouter(
       routes: [
         GoRoute(
           parentNavigatorKey: _rootNavigatorKey,
-          path: "edit",
+          path: 'edit',
           builder: (context, state) {
-            final taskId = state.params["id"]!;
+            final taskId = state.params['id']!;
             final taskIndex = int.parse(taskId);
 
             return EditTaskScreen(taskIndex: taskIndex);
@@ -88,9 +88,9 @@ final router = GoRouter(
         ),
         GoRoute(
           parentNavigatorKey: _rootNavigatorKey,
-          path: "delete",
+          path: 'delete',
           pageBuilder: (context, state) {
-            final taskId = state.params["id"]!;
+            final taskId = state.params['id']!;
             final taskIndex = int.parse(taskId);
 
             return DialogPage(

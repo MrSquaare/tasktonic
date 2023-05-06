@@ -17,16 +17,16 @@ class MainScreen extends StatelessWidget {
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.home),
-            label: "navigation.home".tr(),
+            label: 'navigation.home'.tr(),
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.settings),
-            label: "navigation.settings".tr(),
+            label: 'navigation.settings'.tr(),
           )
         ],
-        currentIndex: state.location == "/" ? 0 : 1,
+        currentIndex: state.location == '/' ? 0 : 1,
         onTap: (index) {
-          context.go(index == 0 ? "/" : "/settings");
+          context.go(index == 0 ? '/' : '/settings');
         },
       ),
     );

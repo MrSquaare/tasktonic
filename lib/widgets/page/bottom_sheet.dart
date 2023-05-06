@@ -65,7 +65,7 @@ class ModalBottomSheetPage<T> extends Page<T> {
   /// See [ModalBottomSheetRoute.useSafeArea]
   final bool useSafeArea;
 
-  @override
+  /// See [ModalBottomSheetRoute.barrierLabel]
   final String? barrierLabel;
 
   @override

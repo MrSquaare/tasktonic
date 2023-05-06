@@ -22,7 +22,7 @@ class TaskForm extends StatelessWidget {
       },
       child: <Widget>[
         FormBuilderTextField(
-          name: "name",
+          name: 'name',
           decoration: InputDecoration(
             labelText: 'task_form.name.label'.tr(),
           ),
@@ -33,7 +33,7 @@ class TaskForm extends StatelessWidget {
           ]),
         ),
         FormBuilderTextField(
-          name: "description",
+          name: 'description',
           decoration: InputDecoration(
             labelText: 'task_form.description.label'.tr(),
           ),
