@@ -1,14 +1,25 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 
+import 'models/adapters.dart';
+import 'repositories/boxes.dart';
 import 'router.dart';
 import 'utilities/android_info.dart';
 import 'wrapper.dart';
 
-void main() async {
+Future<void> setupEnv() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await EasyLocalization.ensureInitialized();
+  await Hive.initFlutter();
+
+  registerAdapters();
+  await openBoxes();
+}
+
+void main() async {
+  await setupEnv();
 
   final androidInfo = await getAndroidInfo();
   final perAppLocale = hasPerAppLocale(androidInfo);

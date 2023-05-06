@@ -1,9 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:styled_widget/styled_widget.dart';
 
-import '../providers/counter.dart';
+import '../providers/task.dart';
+import '../widgets/task/list.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -12,7 +14,7 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     context.locale; // force rebuild when locale changes
 
-    final counter = ref.watch(counterProvider);
+    final tasks = ref.watch(taskProvider);
 
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
@@ -26,13 +28,20 @@ class HomePage extends ConsumerWidget {
         // the App.build method, and use it to set our appbar title.
         title: Text('home.title'.tr()),
       ),
-      body: <Widget>[
-        Text('home.counter_text'.tr()),
-        Text('$counter').fontSize(32),
-      ].toColumn(mainAxisAlignment: MainAxisAlignment.center).center(),
+      body: tasks.when(
+        data: (data) {
+          if (data.isEmpty) {
+            return Text('home.no_task'.tr()).center();
+          }
+
+          return TaskList(tasks: data);
+        },
+        loading: () => const CircularProgressIndicator().center(),
+        error: (error, _) => Text('home.error'.tr()).center(),
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => ref.read(counterProvider.notifier).increment(),
-        tooltip: 'home.increment'.tr(),
+        onPressed: () => context.push('/task/add'),
+        tooltip: 'home.add'.tr(),
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );

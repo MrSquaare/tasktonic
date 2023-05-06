@@ -2,8 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class LanguageSettingsPage extends StatelessWidget {
-  const LanguageSettingsPage({super.key});
+class LanguageSettingsScreen extends StatelessWidget {
+  const LanguageSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

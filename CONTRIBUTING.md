@@ -36,7 +36,13 @@ flutter pub get
 
 ## Building
 
-1. Build the app:
+1. Run `build_runner`
+
+```shell script
+flutter pub run build_runner build
+```
+
+2. Build the app:
 
 ```shell script
 flutter build <target>
@@ -45,7 +51,13 @@ flutter build <target>
 
 ## Developing
 
-1. Run the app:
+1. Run `build_runner`
+
+```shell script
+flutter pub run build_runner watch
+```
+
+2. Run the app:
 
 ```shell script
 flutter run
