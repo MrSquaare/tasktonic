@@ -193,6 +193,9 @@ void main() async {
       expect(find.byType(BottomSheet), findsOneWidget);
       expect(find.text('Test Task'), findsNWidgets(2));
       expect(find.text('Test Description'), findsOneWidget);
+
+      await tester.tapAt(tester.getCenter(find.byType(MyApp)));
+      await tester.pumpAndSettle();
     });
   });
 
@@ -248,6 +251,9 @@ void main() async {
       expect(find.byType(ListTile), findsOneWidget);
       expect(find.text('Test Task Edited'), findsNWidgets(2));
       expect(find.text('Test Description Edited'), findsOneWidget);
+
+      await tester.tapAt(tester.getCenter(find.byType(MyApp)));
+      await tester.pumpAndSettle();
     });
   });
 
