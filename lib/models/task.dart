@@ -24,4 +24,9 @@ class Task {
   toggle() {
     status = status == TaskStatus.todo ? TaskStatus.done : TaskStatus.todo;
   }
+
+  @override
+  String toString() {
+    return 'Task{name: $name, description: $description, status: $status}';
+  }
 }
