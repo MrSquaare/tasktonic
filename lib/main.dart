@@ -8,7 +8,7 @@ import 'router.dart';
 import 'utilities/android_info.dart';
 import 'wrapper.dart';
 
-Future<void> setupEnv() async {
+Future<void> setup() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await EasyLocalization.ensureInitialized();
@@ -18,8 +18,8 @@ Future<void> setupEnv() async {
   await openBoxes();
 }
 
-void main() async {
-  await setupEnv();
+Future<void> main() async {
+  await setup();
 
   final androidInfo = await getAndroidInfo();
   final perAppLocale = hasPerAppLocale(androidInfo);
