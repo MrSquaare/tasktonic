@@ -77,4 +77,10 @@ jobs:
         uses: ./.github/actions/setup-env
 
       - name: Test
-        run: flutter test
+        run: flutter test --coverage
+
+      - name: Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage
