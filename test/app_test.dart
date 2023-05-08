@@ -16,7 +16,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tasktonic/main.dart';
 import 'package:tasktonic/models/adapters.dart';
 import 'package:tasktonic/models/task.dart';
+import 'package:tasktonic/pages/home.dart';
+import 'package:tasktonic/pages/settings.dart';
 import 'package:tasktonic/repositories/boxes.dart';
+import 'package:tasktonic/screens/language_settings.dart';
 import 'package:tasktonic/wrapper.dart';
 
 import 'controller.dart';
@@ -103,7 +106,7 @@ void main() async {
     });
   });
 
-  testWidgets('Should create a new task', (WidgetTester tester) async {
+  testWidgets('Should create task', (WidgetTester tester) async {
     await tester.runAsync(() async {
       final box = Hive.box<Task>('tasks');
 
@@ -136,6 +139,34 @@ void main() async {
 
       expect(find.byType(ListTile), findsOneWidget);
       expect(find.text('Test Task'), findsOneWidget);
+    });
+  });
+
+  testWidgets('Should cancel create task', (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      final box = Hive.box<Task>('tasks');
+
+      await tester.pumpWidget(
+        MyAppWrapper(
+          child: MyApp(),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.text('Test Task'), findsNothing);
+
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      final textFields = find.byType(TextField);
+
+      expect(textFields, findsNWidgets(2));
+
+      await tester.tap(find.byType(TextButton).at(0));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Test Task'), findsNothing);
     });
   });
 
@@ -193,9 +224,43 @@ void main() async {
       expect(find.byType(BottomSheet), findsOneWidget);
       expect(find.text('Test Task'), findsNWidgets(2));
       expect(find.text('Test Description'), findsOneWidget);
+    });
+  });
+
+  testWidgets('Should hide task details', (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      final box = Hive.box<Task>('tasks');
+
+      await box.add(
+        Task(
+          name: 'Test Task',
+          description: 'Test Description',
+        ),
+      );
+
+      await tester.pumpWidget(
+        MyAppWrapper(
+          child: MyApp(),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.byType(ListTile), findsOneWidget);
+
+      await longPress(tester, find.byType(ListTile));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(BottomSheet), findsOneWidget);
+      expect(find.text('Test Task'), findsNWidgets(2));
+      expect(find.text('Test Description'), findsOneWidget);
 
       await tester.tapAt(tester.getCenter(find.byType(MyApp)));
       await tester.pumpAndSettle();
+
+      expect(find.byType(BottomSheet), findsNothing);
+      expect(find.text('Test Task'), findsOneWidget);
+      expect(find.text('Test Description'), findsNothing);
     });
   });
 
@@ -251,9 +316,54 @@ void main() async {
       expect(find.byType(ListTile), findsOneWidget);
       expect(find.text('Test Task Edited'), findsNWidgets(2));
       expect(find.text('Test Description Edited'), findsOneWidget);
+    });
+  });
 
-      await tester.tapAt(tester.getCenter(find.byType(MyApp)));
+  testWidgets('Should cancel edit task', (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      final box = Hive.box<Task>('tasks');
+
+      await box.add(
+        Task(
+          name: 'Test Task',
+          description: 'Test Description',
+        ),
+      );
+
+      await tester.pumpWidget(
+        MyAppWrapper(
+          child: MyApp(),
+        ),
+      );
+
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.byType(ListTile), findsOneWidget);
+
+      await longPress(tester, find.byType(ListTile));
       await tester.pumpAndSettle();
+
+      final bottomSheet = find.byType(BottomSheet);
+      final bottomSheetButtons = find.descendant(
+        of: bottomSheet,
+        matching: find.byType(TextButton),
+      );
+
+      await tester.tap(bottomSheetButtons.at(0));
+      await tester.pumpAndSettle();
+
+      final textFields = find.byType(TextField);
+
+      expect(textFields, findsNWidgets(2));
+      expect(find.text('Test Task'), findsOneWidget);
+      expect(find.text('Test Description'), findsOneWidget);
+
+      await tester.tap(find.byType(TextButton).at(0));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ListTile), findsOneWidget);
+      expect(find.text('Test Task'), findsNWidgets(2));
+      expect(find.text('Test Description'), findsOneWidget);
     });
   });
 
@@ -306,6 +416,159 @@ void main() async {
       expect(alertDialog, findsNothing);
       expect(bottomSheet, findsNothing);
       expect(find.byType(ListTile), findsNothing);
+    });
+  });
+
+  testWidgets('Should cancel delete task', (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      final box = Hive.box<Task>('tasks');
+
+      await box.add(
+        Task(
+          name: 'Test Task',
+          description: 'Test Description',
+        ),
+      );
+
+      await tester.pumpWidget(
+        MyAppWrapper(
+          child: MyApp(),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.byType(ListTile), findsOneWidget);
+
+      await longPress(tester, find.byType(ListTile));
+      await tester.pumpAndSettle();
+
+      final bottomSheet = find.byType(BottomSheet);
+      final bottomSheetButtons = find.descendant(
+        of: bottomSheet,
+        matching: find.byType(TextButton),
+      );
+
+      await tester.tap(bottomSheetButtons.at(1));
+      await tester.pumpAndSettle();
+
+      final alertDialog = find.byType(AlertDialog);
+
+      expect(alertDialog, findsOneWidget);
+
+      final alertDialogButtons = find.descendant(
+        of: alertDialog,
+        matching: find.byType(TextButton),
+      );
+
+      await tester.tap(alertDialogButtons.at(0));
+      await tester.pumpAndSettle();
+
+      expect(alertDialog, findsNothing);
+      expect(find.byType(ListTile), findsOneWidget);
+      expect(find.text('Test Task'), findsNWidgets(2));
+      expect(find.text('Test Description'), findsOneWidget);
+    });
+  });
+
+  testWidgets('Should go to settings', (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(
+        MyAppWrapper(
+          child: MyApp(),
+        ),
+      );
+
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.settings));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+    });
+  });
+
+  testWidgets('Should go to language settings', (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(
+        MyAppWrapper(
+          child: MyApp(),
+        ),
+      );
+
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.settings));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      await tester.tap(find.byType(ListTile).at(0));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LanguageSettingsScreen), findsOneWidget);
+    });
+  });
+
+  testWidgets('Should change language', (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(
+        MyAppWrapper(
+          child: MyApp(),
+        ),
+      );
+
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.settings));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+      expect(find.text('Languages'), findsOneWidget);
+
+      await tester.tap(find.byType(ListTile).at(0));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LanguageSettingsScreen), findsOneWidget);
+
+      await tester.tap(find.byType(ListTile).at(1));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+      expect(find.text('Langages'), findsOneWidget);
+
+      await tester.tap(find.byType(ListTile).at(0));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LanguageSettingsScreen), findsOneWidget);
+
+      await tester.tap(find.byType(ListTile).at(0));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+      expect(find.text('Languages'), findsOneWidget);
+    });
+  });
+
+  testWidgets('Should go to settings then home', (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(
+        MyAppWrapper(
+          child: MyApp(),
+        ),
+      );
+
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.settings));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.home));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(HomePage), findsOneWidget);
     });
   });
 }
