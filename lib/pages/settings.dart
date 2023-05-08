@@ -20,7 +20,7 @@ class SettingsPage extends ConsumerWidget {
     if (context.perAppLocale) {
       _openAndroidAppLocaleSettings();
     } else {
-      context.go("/settings/language");
+      context.go('/settings/language');
     }
   }
 

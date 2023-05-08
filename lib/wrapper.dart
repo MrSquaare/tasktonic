@@ -30,7 +30,7 @@ class MyAppWrapper extends StatelessWidget {
           path: 'assets/translations',
           supportedLocales: const [Locale('en'), Locale('fr')],
           fallbackLocale: const Locale('en'),
-          saveLocale: perAppLocale == false,
+          saveLocale: !perAppLocale,
           child: LocaleListenerWidget(
             perAppLocale: perAppLocale,
             child: child,

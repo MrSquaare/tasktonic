@@ -5,8 +5,9 @@
   },
   "home": {
     "title": "Accueil",
-    "counter_text": "Vous avez poussé le bouton ce nombre de fois :",
-    "increment": "Incrémenter"
+    "no_task": "Il n'y a aucune tâche",
+    "error": "Une erreur est survenue",
+    "add": "Ajouter"
   },
   "settings": {
     "title": "Paramètres",
@@ -14,5 +15,40 @@
     "language": {
       "title": "Sélectionner une langue"
     }
+  },
+  "task_form": {
+    "name": {
+      "label": "Nom",
+      "error": {
+        "required": "Le nom est requis"
+      }
+    },
+    "description": {
+      "label": "Description"
+    }
+  },
+  "add_task": {
+    "title": "Ajouter une tâche",
+    "cancel": "Annuler",
+    "add": "Ajouter"
+  },
+  "edit_task": {
+    "title": "Éditer une tâche",
+    "cancel": "Annuler",
+    "edit": "Éditer"
+  },
+  "delete_task": {
+    "title": "Supprimer une tâche",
+    "content": {
+      "1": "Êtes-vous sûr de vouloir supprimer la tâche ",
+      "2": " ?"
+    },
+    "cancel": "Annuler",
+    "delete": "Supprimer"
+  },
+  "task_details": {
+    "no_description": "Aucune description",
+    "edit": "Éditer",
+    "delete": "Supprimer"
   }
 }
