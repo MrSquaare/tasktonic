@@ -27,7 +27,7 @@ class _LocaleListenerWidgetState extends State<LocaleListenerWidget>
   void didChangeLocales(List<Locale>? locales) {
     super.didChangeLocales(locales);
 
-    if (widget.perAppLocale == false) return;
+    if (!widget.perAppLocale) return;
 
     final locale = locales?.first;
 
