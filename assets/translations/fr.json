@@ -6,6 +6,7 @@
   "home": {
     "title": "Accueil",
     "no_task": "Il n'y a aucune tâche",
+    "error": "Une erreur est survenue",
     "add": "Ajouter"
   },
   "settings": {

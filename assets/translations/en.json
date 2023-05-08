@@ -6,6 +6,7 @@
   "home": {
     "title": "Home",
     "no_task": "There is no task",
+    "error": "An error occurred",
     "add": "Add"
   },
   "settings": {
