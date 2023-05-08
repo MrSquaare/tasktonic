@@ -144,8 +144,6 @@ void main() async {
 
   testWidgets('Should cancel create task', (WidgetTester tester) async {
     await tester.runAsync(() async {
-      final box = Hive.box<Task>('tasks');
-
       await tester.pumpWidget(
         MyAppWrapper(
           child: MyApp(),
