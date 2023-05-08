@@ -35,6 +35,8 @@ Future<void> main() async {
 class MyApp extends StatelessWidget with WidgetsBindingObserver {
   MyApp({super.key});
 
+  final _router = createRouter();
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      routerConfig: router,
+      routerConfig: _router,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
