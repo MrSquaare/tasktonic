@@ -19,8 +19,8 @@ class _LocaleListenerWidgetState extends State<LocaleListenerWidget>
     with WidgetsBindingObserver {
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
