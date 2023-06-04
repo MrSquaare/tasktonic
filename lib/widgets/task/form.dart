@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 import '../../models/task.dart';
+import '../../utilities/task.dart';
 
 class TaskForm extends StatelessWidget {
   const TaskForm({super.key, required this.formKey, this.task});
@@ -14,11 +15,16 @@ class TaskForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final reminderValue = task?.reminder;
+    final reminder =
+        reminderValue != null ? convertUTCTimeToDateTime(reminderValue) : null;
+
     return FormBuilder(
       key: formKey,
       initialValue: {
         'name': task?.name,
         'description': task?.description,
+        'reminder': reminder,
       },
       child: <Widget>[
         FormBuilderTextField(
@@ -40,6 +46,13 @@ class TaskForm extends StatelessWidget {
           keyboardType: TextInputType.multiline,
           minLines: 1,
           maxLines: 5,
+        ),
+        FormBuilderDateTimePicker(
+          name: 'reminder',
+          inputType: InputType.time,
+          decoration: InputDecoration(
+            labelText: 'task_form.reminder.label'.tr(),
+          ),
         ),
       ].toColumn(),
     );

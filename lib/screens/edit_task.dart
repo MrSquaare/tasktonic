@@ -7,7 +7,8 @@ import 'package:styled_widget/styled_widget.dart';
 
 import '../models/task.dart';
 import '../providers/task.dart';
-import '../widgets/task/task_form.dart';
+import '../utilities/task.dart';
+import '../widgets/task/form.dart';
 
 class EditTaskScreen extends ConsumerWidget {
   EditTaskScreen({super.key, required this.taskIndex});
@@ -19,9 +20,14 @@ class EditTaskScreen extends ConsumerWidget {
   _onEdit(BuildContext context, WidgetRef ref) {
     if (!_formKey.currentState!.saveAndValidate()) return;
 
+    final reminderValue = _formKey.currentState!.value['reminder'];
+
     final task = Task(
       name: _formKey.currentState!.value['name'],
       description: _formKey.currentState!.value['description'],
+      reminder: reminderValue != null
+          ? convertDateTimeToUTCTime(reminderValue)
+          : null,
     );
 
     ref

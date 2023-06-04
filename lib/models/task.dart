@@ -18,8 +18,19 @@ class Task {
   String? description;
   @HiveField(2, defaultValue: TaskStatus.todo)
   TaskStatus status;
+  @HiveField(3)
 
-  Task({required this.name, this.description, this.status = TaskStatus.todo});
+  /// UTC time in seconds
+  ///
+  /// Example: 0 = 00:00:00, 3600 = 01:00:00, 86399 = 23:59:59
+  int? reminder;
+
+  Task({
+    required this.name,
+    this.description,
+    this.status = TaskStatus.todo,
+    this.reminder,
+  });
 
   toggle() {
     status = status == TaskStatus.todo ? TaskStatus.done : TaskStatus.todo;
@@ -27,6 +38,6 @@ class Task {
 
   @override
   String toString() {
-    return 'Task{name: $name, description: $description, status: $status}';
+    return 'Task{name: $name, description: $description, status: $status, reminder: $reminder}';
   }
 }

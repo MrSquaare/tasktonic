@@ -20,19 +20,22 @@ class TaskAdapter extends TypeAdapter<Task> {
       name: fields[0] as String,
       description: fields[1] as String?,
       status: fields[2] == null ? TaskStatus.todo : fields[2] as TaskStatus,
+      reminder: fields[3] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Task obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
       ..write(obj.description)
       ..writeByte(2)
-      ..write(obj.status);
+      ..write(obj.status)
+      ..writeByte(3)
+      ..write(obj.reminder);
   }
 
   @override
