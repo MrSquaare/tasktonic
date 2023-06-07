@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'locale.dart';
+import 'notification.dart';
 import 'provider.dart';
 
 class MyAppWrapper extends StatelessWidget {
@@ -26,14 +27,16 @@ class MyAppWrapper extends StatelessWidget {
       child: ProviderScope(
         overrides: providerOverrides,
         observers: providerObservers,
-        child: EasyLocalization(
-          path: 'assets/translations',
-          supportedLocales: const [Locale('en'), Locale('fr')],
-          fallbackLocale: const Locale('en'),
-          saveLocale: !perAppLocale,
-          child: LocaleListenerWidget(
-            perAppLocale: perAppLocale,
-            child: child,
+        child: NotificationListenerWidget(
+          child: EasyLocalization(
+            path: 'assets/translations',
+            supportedLocales: const [Locale('en'), Locale('fr')],
+            fallbackLocale: const Locale('en'),
+            saveLocale: !perAppLocale,
+            child: LocaleListenerWidget(
+              perAppLocale: perAppLocale,
+              child: child,
+            ),
           ),
         ),
       ),

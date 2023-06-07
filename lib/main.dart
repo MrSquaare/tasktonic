@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -10,6 +11,27 @@ import 'wrapper.dart';
 
 Future<void> setup() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelGroupKey: 'general_channel_group',
+        channelKey: 'reminder_channel',
+        channelName: 'Reminder',
+        channelDescription: 'Reminder notifications',
+        defaultColor: Colors.blue,
+        ledColor: Colors.white,
+      )
+    ],
+    channelGroups: [
+      NotificationChannelGroup(
+        channelGroupKey: 'general_channel_group',
+        channelGroupName: 'General',
+      )
+    ],
+    debug: true,
+  );
 
   await EasyLocalization.ensureInitialized();
   await Hive.initFlutter();
@@ -32,7 +54,7 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget with WidgetsBindingObserver {
+class MyApp extends StatelessWidget {
   MyApp({super.key});
 
   final _router = createRouter();
