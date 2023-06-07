@@ -11,6 +11,8 @@ import 'package:tasktonic/pages/home.dart';
 import 'package:tasktonic/providers/task.dart';
 import 'package:tasktonic/wrapper.dart';
 
+import '../widget.dart';
+
 class MockTaskNotifier extends AsyncNotifier<Iterable<Task>>
     with Mock
     implements TaskNotifier {
@@ -39,8 +41,8 @@ void main() {
     await tester.runAsync(() async {
       final taskNotifier = MockTaskNotifier();
 
-      when(taskNotifier.build()).thenAnswer((_) {
-        return [Task(name: 'Task Test')];
+      when(taskNotifier.build()).thenAnswer((_) async {
+        return Future.value([Task(name: 'Task Test')]);
       });
 
       final taskProviderOverride = taskProvider.overrideWith(
@@ -50,16 +52,16 @@ void main() {
       await tester.pumpWidget(
         MyAppWrapper(
           providerOverrides: [taskProviderOverride],
-          child: const MaterialApp(
+          child: const MaterialAppTest(
             home: HomePage(),
           ),
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(find.byType(ListTile), findsOneWidget);
-      expect(find.text('Task Test'), findsOneWidget);
+      expectLater(find.byType(ListTile), findsOneWidget);
+      expectLater(find.text('Task Test'), findsOneWidget);
     });
   });
 
@@ -80,7 +82,7 @@ void main() {
       await tester.pumpWidget(
         MyAppWrapper(
           providerOverrides: [taskProviderOverride],
-          child: const MaterialApp(
+          child: const MaterialAppTest(
             home: HomePage(),
           ),
         ),
@@ -97,9 +99,7 @@ void main() {
       final taskNotifier = MockTaskNotifier();
 
       when(taskNotifier.build()).thenAnswer((_) async {
-        await Future.error(Exception());
-
-        return [];
+        return Future.error(Exception());
       });
 
       final taskProviderOverride = taskProvider.overrideWith(
@@ -109,15 +109,15 @@ void main() {
       await tester.pumpWidget(
         MyAppWrapper(
           providerOverrides: [taskProviderOverride],
-          child: const MaterialApp(
+          child: const MaterialAppTest(
             home: HomePage(),
           ),
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(find.text('home.error'), findsOneWidget);
+      expect(find.text('An error occurred'), findsOneWidget);
     });
   });
 }

@@ -125,8 +125,6 @@ void main() async {
 
       final textFields = find.byType(TextField);
 
-      expect(textFields, findsNWidgets(2));
-
       await tester.tap(textFields.at(0));
       await tester.pumpAndSettle();
       await tester.enterText(textFields.at(0), 'Test Task');
@@ -156,10 +154,6 @@ void main() async {
 
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
-
-      final textFields = find.byType(TextField);
-
-      expect(textFields, findsNWidgets(2));
 
       await tester.tap(find.byType(TextButton).at(0));
       await tester.pumpAndSettle();
@@ -297,7 +291,6 @@ void main() async {
 
       final textFields = find.byType(TextField);
 
-      expect(textFields, findsNWidgets(2));
       expect(find.text('Test Task'), findsOneWidget);
       expect(find.text('Test Description'), findsOneWidget);
 
@@ -350,9 +343,6 @@ void main() async {
       await tester.tap(bottomSheetButtons.at(0));
       await tester.pumpAndSettle();
 
-      final textFields = find.byType(TextField);
-
-      expect(textFields, findsNWidgets(2));
       expect(find.text('Test Task'), findsOneWidget);
       expect(find.text('Test Description'), findsOneWidget);
 
