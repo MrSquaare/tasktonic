@@ -6,7 +6,6 @@ import 'package:styled_widget/styled_widget.dart';
 
 import '../../models/task.dart';
 import '../../providers/task.dart';
-import '../../utilities/task.dart';
 
 class TaskList extends ConsumerWidget {
   const TaskList({super.key, required this.tasks});
@@ -18,11 +17,12 @@ class TaskList extends ConsumerWidget {
     return ListView(
       children: tasks.map((task) {
         final index = tasks.toList().indexOf(task);
-        final reminderValue = task.reminder;
-        final reminder = reminderValue != null
-            ? convertUTCTimeToDateTime(reminderValue)
-            : null;
-        final reminderFormat = DateFormat.Hm();
+        final date = task.date?.toLocal();
+        final dateFormat = date != null && date.year == DateTime.now().year
+            ? DateFormat.MMMd(context.locale.toString())
+            : DateFormat.yMMMMd(context.locale.toString());
+        final reminder = task.reminder?.toLocal();
+        final reminderFormat = DateFormat.Hm(context.locale.toString());
 
         return ListTile(
           leading: Icon(
@@ -32,17 +32,31 @@ class TaskList extends ConsumerWidget {
           ),
           title: <Widget>[
             Text(task.name),
-            if (reminder != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Chip(
-                  avatar: const Icon(Icons.notifications),
-                  label: Text(reminderFormat.format(reminder)),
-                  backgroundColor: Colors.lightBlue,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: const EdgeInsets.all(0),
-                ),
-              )
+            if (date != null || reminder != null)
+              <Widget>[
+                if (date != null)
+                  Chip(
+                    avatar: const Icon(Icons.calendar_month),
+                    label: Text(dateFormat.format(date)),
+                    backgroundColor: Colors.lightBlue,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    padding: const EdgeInsets.all(0),
+                  ),
+                if (reminder != null)
+                  Chip(
+                    avatar: const Icon(Icons.notifications),
+                    label: Text(reminderFormat.format(reminder)),
+                    backgroundColor: Colors.lightBlue,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    padding: const EdgeInsets.all(0),
+                  )
+              ]
+                  .toRow(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    separator: const SizedBox(width: 4),
+                  )
+                  .padding(top: 4),
           ].toColumn(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,

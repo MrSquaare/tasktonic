@@ -19,16 +19,15 @@ class Task {
   @HiveField(2, defaultValue: TaskStatus.todo)
   TaskStatus status;
   @HiveField(3)
-
-  /// UTC time in seconds
-  ///
-  /// Example: 0 = 00:00:00, 3600 = 01:00:00, 86399 = 23:59:59
-  int? reminder;
+  DateTime? date;
+  @HiveField(4)
+  DateTime? reminder;
 
   Task({
     required this.name,
     this.description,
     this.status = TaskStatus.todo,
+    this.date,
     this.reminder,
   });
 
@@ -38,6 +37,6 @@ class Task {
 
   @override
   String toString() {
-    return 'Task{name: $name, description: $description, status: $status, reminder: $reminder}';
+    return 'Task{name: $name, description: $description, status: $status, date: $date, reminder: $reminder}';
   }
 }

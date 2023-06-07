@@ -5,26 +5,36 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 import '../../models/task.dart';
-import '../../utilities/task.dart';
 
-class TaskForm extends StatelessWidget {
+class TaskForm extends StatefulWidget {
   const TaskForm({super.key, required this.formKey, this.task});
 
   final GlobalKey<FormBuilderState> formKey;
   final Task? task;
 
   @override
-  Widget build(BuildContext context) {
-    final reminderValue = task?.reminder;
-    final reminder =
-        reminderValue != null ? convertUTCTimeToDateTime(reminderValue) : null;
+  State<TaskForm> createState() => _TaskFormState();
+}
 
+class _TaskFormState extends State<TaskForm> {
+  bool _hasDate = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _hasDate = widget.task?.reminder != null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return FormBuilder(
-      key: formKey,
+      key: widget.formKey,
       initialValue: {
-        'name': task?.name,
-        'description': task?.description,
-        'reminder': reminder,
+        'name': widget.task?.name,
+        'description': widget.task?.description,
+        'date': widget.task?.date?.toLocal(),
+        'reminder': widget.task?.reminder?.toLocal(),
       },
       child: <Widget>[
         FormBuilderTextField(
@@ -48,12 +58,41 @@ class TaskForm extends StatelessWidget {
           maxLines: 5,
         ),
         FormBuilderDateTimePicker(
-          name: 'reminder',
-          inputType: InputType.time,
+          name: 'date',
+          inputType: InputType.date,
+          firstDate: DateTime.now(),
           decoration: InputDecoration(
-            labelText: 'task_form.reminder.label'.tr(),
+            labelText: 'task_form.date.label'.tr(),
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                widget.formKey.currentState?.fields['date']?.didChange(null);
+                widget.formKey.currentState?.fields['reminder']
+                    ?.didChange(null);
+              },
+            ),
           ),
+          onChanged: (value) {
+            setState(() {
+              _hasDate = value != null;
+            });
+          },
         ),
+        if (_hasDate)
+          FormBuilderDateTimePicker(
+            name: 'reminder',
+            inputType: InputType.time,
+            decoration: InputDecoration(
+              labelText: 'task_form.reminder.label'.tr(),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: () {
+                  widget.formKey.currentState?.fields['reminder']
+                      ?.didChange(null);
+                },
+              ),
+            ),
+          ),
       ].toColumn(),
     );
   }

@@ -26,6 +26,9 @@
     "description": {
       "label": "Description"
     },
+    "date": {
+      "label": "Date"
+    },
     "reminder": {
       "label": "Reminder"
     }
@@ -51,6 +54,7 @@
   },
   "task_details": {
     "no_description": "No description",
+    "date": "For the {date}",
     "reminder": "Reminder at {time}",
     "edit": "Edit",
     "delete": "Delete"
