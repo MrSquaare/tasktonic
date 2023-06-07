@@ -15,12 +15,16 @@ class TaskNotifier extends AsyncNotifier<Iterable<Task>> {
     return repository.list();
   }
 
-  Future<void> createTask(Task task) async {
+  Future<int> createTask(Task task) async {
+    late int index;
+
     state = await AsyncValue.guard(() async {
-      await repository.create(task);
+      index = await repository.create(task);
 
       return repository.list();
     });
+
+    return index;
   }
 
   Future<void> toggleTask(int index, Task task) async {

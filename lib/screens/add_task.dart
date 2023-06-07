@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -28,7 +29,27 @@ class AddTaskScreen extends ConsumerWidget {
       reminder: reminderValue?.toUtc(),
     );
 
-    ref.read(taskProvider.notifier).createTask(task).then((_) => context.pop());
+    ref.read(taskProvider.notifier).createTask(task).then((index) async {
+      context.pop();
+
+      if (reminderValue != null) {
+        await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: index,
+            channelKey: 'reminder_channel',
+            title: task.name,
+            body: task.description,
+            category: NotificationCategory.Reminder,
+            wakeUpScreen: true,
+          ),
+          schedule: NotificationCalendar(
+            hour: reminderValue.hour,
+            minute: reminderValue.minute,
+            timeZone: reminderValue.timeZoneName,
+          ),
+        );
+      }
+    });
   }
 
   @override
