@@ -69,7 +69,7 @@ GoRouter createRouter() {
         parentNavigatorKey: rootNavigatorKey,
         path: '/task/:id',
         pageBuilder: (context, state) {
-          final taskId = state.params['id']!;
+          final taskId = state.pathParameters['id']!;
           final taskIndex = int.parse(taskId);
 
           return ModalBottomSheetPage(
@@ -82,7 +82,7 @@ GoRouter createRouter() {
             parentNavigatorKey: rootNavigatorKey,
             path: 'edit',
             builder: (context, state) {
-              final taskId = state.params['id']!;
+              final taskId = state.pathParameters['id']!;
               final taskIndex = int.parse(taskId);
 
               return EditTaskScreen(taskIndex: taskIndex);
@@ -92,7 +92,7 @@ GoRouter createRouter() {
             parentNavigatorKey: rootNavigatorKey,
             path: 'delete',
             pageBuilder: (context, state) {
-              final taskId = state.params['id']!;
+              final taskId = state.pathParameters['id']!;
               final taskIndex = int.parse(taskId);
 
               return DialogPage(
