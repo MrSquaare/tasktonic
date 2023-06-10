@@ -1,4 +1,3 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -37,26 +36,9 @@ class EditTaskScreen extends ConsumerWidget {
       context.pop();
 
       if (dateValue != null && reminderValue != null) {
-        await AwesomeNotifications().createNotification(
-          content: NotificationContent(
-            id: taskIndex,
-            channelKey: 'reminder_channel',
-            title: task.name,
-            body: task.description,
-            category: NotificationCategory.Reminder,
-            wakeUpScreen: true,
-          ),
-          schedule: NotificationCalendar(
-            year: dateValue.year,
-            month: dateValue.month,
-            day: dateValue.day,
-            hour: reminderValue.hour,
-            minute: reminderValue.minute,
-            timeZone: reminderValue.timeZoneName,
-          ),
-        );
+        ref.read(taskProvider.notifier).createTaskNotification(taskIndex, task);
       } else {
-        await AwesomeNotifications().cancel(taskIndex);
+        ref.read(taskProvider.notifier).cancelTaskNotification(taskIndex);
       }
     });
   }

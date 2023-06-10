@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/task.dart';
@@ -51,6 +52,36 @@ class TaskNotifier extends AsyncNotifier<Iterable<Task>> {
 
       return repository.list();
     });
+  }
+
+  Future<void> createTaskNotification(int index, Task task) async {
+    final date = task.date;
+    final reminder = task.reminder;
+
+    if (date == null || reminder == null) return;
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: index,
+        channelKey: 'reminder_channel',
+        title: task.name,
+        body: task.description,
+        category: NotificationCategory.Reminder,
+        wakeUpScreen: true,
+      ),
+      schedule: NotificationCalendar(
+        year: date.year,
+        month: date.month,
+        day: date.day,
+        hour: reminder.hour,
+        minute: reminder.minute,
+        timeZone: reminder.timeZoneName,
+      ),
+    );
+  }
+
+  Future<void> cancelTaskNotification(int index) async {
+    await AwesomeNotifications().cancel(index);
   }
 }
 
