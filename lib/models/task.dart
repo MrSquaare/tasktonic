@@ -19,9 +19,9 @@ class Task {
   @HiveField(2, defaultValue: TaskStatus.todo)
   TaskStatus status;
   @HiveField(3)
-  DateTime? date;
+  String? date;
   @HiveField(4)
-  DateTime? reminder;
+  String? reminder;
 
   Task({
     required this.name,

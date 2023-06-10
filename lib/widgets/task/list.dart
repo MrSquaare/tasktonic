@@ -6,6 +6,7 @@ import 'package:styled_widget/styled_widget.dart';
 
 import '../../models/task.dart';
 import '../../providers/task.dart';
+import '../../utilities/date.dart';
 
 class TaskList extends ConsumerWidget {
   const TaskList({super.key, required this.tasks});
@@ -17,11 +18,11 @@ class TaskList extends ConsumerWidget {
     return ListView(
       children: tasks.map((task) {
         final index = tasks.toList().indexOf(task);
-        final date = task.date?.toLocal();
+        final date = dateStringToDateTime(task.date);
         final dateFormat = date != null && date.year == DateTime.now().year
             ? DateFormat.MMMd(context.locale.toString())
             : DateFormat.yMMMMd(context.locale.toString());
-        final reminder = task.reminder?.toLocal();
+        final reminder = timeStringToDateTime(task.reminder);
         final reminderFormat = DateFormat.Hm(context.locale.toString());
 
         return ListTile(

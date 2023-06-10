@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 import '../../models/task.dart';
+import '../../utilities/date.dart';
 
 class TaskDetails extends StatelessWidget {
   const TaskDetails({super.key, required this.task});
@@ -11,11 +12,11 @@ class TaskDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final date = task.date?.toLocal();
+    final date = dateStringToDateTime(task.date);
     final dateFormat = date != null && date.year == DateTime.now().year
         ? DateFormat.MMMd(context.locale.toString())
         : DateFormat.yMMMMd(context.locale.toString());
-    final reminder = task.reminder?.toLocal();
+    final reminder = timeStringToDateTime(task.reminder);
     final reminderFormat = DateFormat.Hm();
 
     return <Widget>[

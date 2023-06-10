@@ -8,6 +8,7 @@ import 'package:styled_widget/styled_widget.dart';
 import '../models/task.dart';
 import '../providers/task.dart';
 
+import '../utilities/date.dart';
 import '../widgets/task/form.dart';
 
 class AddTaskScreen extends ConsumerWidget {
@@ -24,8 +25,8 @@ class AddTaskScreen extends ConsumerWidget {
     final task = Task(
       name: _formKey.currentState!.value['name'],
       description: _formKey.currentState!.value['description'],
-      date: dateValue?.toUtc(),
-      reminder: reminderValue?.toUtc(),
+      date: dateTimeToDateString(dateValue),
+      reminder: dateTimeToTimeString(reminderValue),
     );
 
     ref.read(taskProvider.notifier).createTask(task).then((taskIndex) async {

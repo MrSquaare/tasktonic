@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/task.dart';
 import '../repositories/task.dart';
+import '../utilities/date.dart';
 
 class TaskNotifier extends AsyncNotifier<Iterable<Task>> {
   TaskNotifier(this.repository) : super();
@@ -55,8 +56,8 @@ class TaskNotifier extends AsyncNotifier<Iterable<Task>> {
   }
 
   Future<void> createTaskNotification(int index, Task task) async {
-    final date = task.date;
-    final reminder = task.reminder;
+    final date = dateStringToDateTime(task.date);
+    final reminder = timeStringToDateTime(task.reminder);
 
     if (date == null || reminder == null) return;
 

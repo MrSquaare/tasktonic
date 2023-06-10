@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 import '../../models/task.dart';
+import '../../utilities/date.dart';
 
 class TaskForm extends StatefulWidget {
   const TaskForm({super.key, required this.formKey, this.task});
@@ -33,8 +34,8 @@ class _TaskFormState extends State<TaskForm> {
       initialValue: {
         'name': widget.task?.name,
         'description': widget.task?.description,
-        'date': widget.task?.date?.toLocal(),
-        'reminder': widget.task?.reminder?.toLocal(),
+        'date': dateStringToDateTime(widget.task?.date),
+        'reminder': timeStringToDateTime(widget.task?.reminder),
       },
       child: <Widget>[
         FormBuilderTextField(
@@ -60,7 +61,7 @@ class _TaskFormState extends State<TaskForm> {
         FormBuilderDateTimePicker(
           name: 'date',
           inputType: InputType.date,
-          firstDate: DateTime.now(),
+          currentDate: DateTime.now(),
           decoration: InputDecoration(
             labelText: 'task_form.date.label'.tr(),
             suffixIcon: IconButton(
@@ -82,6 +83,7 @@ class _TaskFormState extends State<TaskForm> {
           FormBuilderDateTimePicker(
             name: 'reminder',
             inputType: InputType.time,
+            currentDate: DateTime.now(),
             decoration: InputDecoration(
               labelText: 'task_form.reminder.label'.tr(),
               suffixIcon: IconButton(

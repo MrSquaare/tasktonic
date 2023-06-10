@@ -20,8 +20,8 @@ class TaskAdapter extends TypeAdapter<Task> {
       name: fields[0] as String,
       description: fields[1] as String?,
       status: fields[2] == null ? TaskStatus.todo : fields[2] as TaskStatus,
-      date: fields[3] as DateTime?,
-      reminder: fields[4] as DateTime?,
+      date: fields[3] as String?,
+      reminder: fields[4] as String?,
     );
   }
 
