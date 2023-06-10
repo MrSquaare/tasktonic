@@ -1,5 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -30,7 +31,7 @@ Future<void> setup() async {
         channelGroupName: 'General',
       )
     ],
-    debug: true,
+    debug: kDebugMode,
   );
 
   await EasyLocalization.ensureInitialized();
