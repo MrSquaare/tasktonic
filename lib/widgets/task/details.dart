@@ -14,7 +14,7 @@ class TaskDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final date = dateStringToDateTime(task.date);
     final dateFormat = date != null && date.year == DateTime.now().year
-        ? DateFormat.MMMd(context.locale.toString())
+        ? DateFormat.MMMMd(context.locale.toString())
         : DateFormat.yMMMMd(context.locale.toString());
     final reminder = timeStringToDateTime(task.reminder);
     final reminderFormat = DateFormat.Hm();
