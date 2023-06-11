@@ -10,12 +10,18 @@ class MyAppWrapper extends StatelessWidget {
   const MyAppWrapper({
     super.key,
     required this.child,
+    this.localePath = 'assets/translations',
+    this.supportedLocales = const [Locale('en'), Locale('fr')],
+    this.fallbackLocale = const Locale('en'),
     this.perAppLocale = false,
     this.providerOverrides = const [],
     this.providerObservers,
   });
 
   final Widget child;
+  final String localePath;
+  final List<Locale> supportedLocales;
+  final Locale fallbackLocale;
   final bool perAppLocale;
   final List<Override> providerOverrides;
   final List<ProviderObserver>? providerObservers;
@@ -28,9 +34,9 @@ class MyAppWrapper extends StatelessWidget {
         overrides: providerOverrides,
         observers: providerObservers,
         child: EasyLocalization(
-          path: 'assets/translations',
-          supportedLocales: const [Locale('en'), Locale('fr')],
-          fallbackLocale: const Locale('en'),
+          path: localePath,
+          supportedLocales: supportedLocales,
+          fallbackLocale: fallbackLocale,
           saveLocale: !perAppLocale,
           child: LocaleListenerWidget(
             perAppLocale: perAppLocale,
