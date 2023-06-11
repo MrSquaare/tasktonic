@@ -92,6 +92,32 @@ void main() {
     });
   });
 
+  testWidgets('should display task date with year', (tester) async {
+    await tester.runAsync(() async {
+      final task = Task(
+        name: 'Test Task',
+        date: '${currentYear + 1}-01-01',
+      );
+
+      await tester.pumpWidget(
+        MyAppWrapper(
+          child: MaterialAppTest(
+            home: Scaffold(
+              body: TaskDetails(task: task),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('For the January 1, ${currentYear + 1}'),
+        findsOneWidget,
+      );
+    });
+  });
+
   // This shouldn't happen, but it's here just in case
   testWidgets('should display only task reminder', (tester) async {
     await tester.runAsync(() async {
