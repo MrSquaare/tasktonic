@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'locale.dart';
 import 'notification.dart';
-import 'provider.dart';
+import 'info.dart';
 
 class MyAppWrapper extends StatelessWidget {
   const MyAppWrapper({
@@ -22,19 +22,19 @@ class MyAppWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MyAppProvider(
+    return MyAppInfo(
       perAppLocale: perAppLocale,
       child: ProviderScope(
         overrides: providerOverrides,
         observers: providerObservers,
-        child: NotificationListenerWidget(
-          child: EasyLocalization(
-            path: 'assets/translations',
-            supportedLocales: const [Locale('en'), Locale('fr')],
-            fallbackLocale: const Locale('en'),
-            saveLocale: !perAppLocale,
-            child: LocaleListenerWidget(
-              perAppLocale: perAppLocale,
+        child: EasyLocalization(
+          path: 'assets/translations',
+          supportedLocales: const [Locale('en'), Locale('fr')],
+          fallbackLocale: const Locale('en'),
+          saveLocale: !perAppLocale,
+          child: LocaleListenerWidget(
+            perAppLocale: perAppLocale,
+            child: NotificationListenerWidget(
               child: child,
             ),
           ),
