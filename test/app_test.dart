@@ -19,6 +19,7 @@ import 'package:tasktonic/models/task.dart';
 import 'package:tasktonic/pages/home.dart';
 import 'package:tasktonic/pages/settings.dart';
 import 'package:tasktonic/repositories/boxes.dart';
+import 'package:tasktonic/router.dart';
 import 'package:tasktonic/screens/language_settings.dart';
 import 'package:tasktonic/wrapper.dart';
 
@@ -48,6 +49,7 @@ void main() async {
   });
 
   tearDown(() async {
+    MyAppRouter.instance = null;
     await Hive.deleteFromDisk();
   });
 
@@ -59,7 +61,7 @@ void main() async {
     await tester.runAsync(() async {
       // Build our app and trigger a frame.
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -71,7 +73,7 @@ void main() async {
   testWidgets('Should have no task', (WidgetTester tester) async {
     await tester.runAsync(() async {
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -94,7 +96,7 @@ void main() async {
       );
 
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -111,7 +113,7 @@ void main() async {
       final box = Hive.box<Task>('tasks');
 
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -143,7 +145,7 @@ void main() async {
   testWidgets('Should cancel create task', (WidgetTester tester) async {
     await tester.runAsync(() async {
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -174,7 +176,7 @@ void main() async {
       );
 
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -201,7 +203,7 @@ void main() async {
       );
 
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -231,7 +233,7 @@ void main() async {
       );
 
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -268,7 +270,7 @@ void main() async {
       );
 
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -322,7 +324,7 @@ void main() async {
       );
 
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -367,7 +369,7 @@ void main() async {
       );
 
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -419,7 +421,7 @@ void main() async {
       );
 
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -462,7 +464,7 @@ void main() async {
   testWidgets('Should go to settings', (WidgetTester tester) async {
     await tester.runAsync(() async {
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -479,7 +481,7 @@ void main() async {
   testWidgets('Should go to language settings', (WidgetTester tester) async {
     await tester.runAsync(() async {
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -501,7 +503,7 @@ void main() async {
   testWidgets('Should change language', (WidgetTester tester) async {
     await tester.runAsync(() async {
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );
@@ -541,7 +543,7 @@ void main() async {
   testWidgets('Should go to settings then home', (WidgetTester tester) async {
     await tester.runAsync(() async {
       await tester.pumpWidget(
-        MyAppWrapper(
+        const MyAppWrapper(
           child: MyApp(),
         ),
       );

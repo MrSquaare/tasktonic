@@ -71,7 +71,7 @@ class TaskList extends ConsumerWidget {
             ref.read(taskProvider.notifier).toggleTask(index, task);
           },
           onLongPress: () {
-            context.push('/task/$index');
+            context.push('/task/$index/details');
           },
         );
       }).toList(),

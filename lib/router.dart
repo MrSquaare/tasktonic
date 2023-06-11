@@ -36,7 +36,22 @@ GoRouter createRouter() {
                 child: HomePage(),
               );
             },
-            routes: const [],
+            routes: [
+              GoRoute(
+                parentNavigatorKey: rootNavigatorKey,
+                path: 'task/:id/details',
+                pageBuilder: (context, state) {
+                  final taskId = state.pathParameters['id']!;
+                  final taskIndex = int.parse(taskId);
+
+                  return ModalBottomSheetPage(
+                    builder: (context) =>
+                        TaskDetailsScreen(taskIndex: taskIndex),
+                    isScrollControlled: false,
+                  );
+                },
+              )
+            ],
           ),
           GoRoute(
             parentNavigatorKey: shellNavigatorKey,
@@ -67,41 +82,36 @@ GoRouter createRouter() {
       ),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
-        path: '/task/:id',
+        path: '/task/:id/edit',
+        builder: (context, state) {
+          final taskId = state.pathParameters['id']!;
+          final taskIndex = int.parse(taskId);
+
+          return EditTaskScreen(taskIndex: taskIndex);
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: rootNavigatorKey,
+        path: '/task/:id/delete',
         pageBuilder: (context, state) {
           final taskId = state.pathParameters['id']!;
           final taskIndex = int.parse(taskId);
 
-          return ModalBottomSheetPage(
-            builder: (context) => TaskDetailsScreen(taskIndex: taskIndex),
-            isScrollControlled: false,
+          return DialogPage(
+            builder: (context) => DeleteTaskDialog(taskIndex: taskIndex),
           );
         },
-        routes: [
-          GoRoute(
-            parentNavigatorKey: rootNavigatorKey,
-            path: 'edit',
-            builder: (context, state) {
-              final taskId = state.pathParameters['id']!;
-              final taskIndex = int.parse(taskId);
-
-              return EditTaskScreen(taskIndex: taskIndex);
-            },
-          ),
-          GoRoute(
-            parentNavigatorKey: rootNavigatorKey,
-            path: 'delete',
-            pageBuilder: (context, state) {
-              final taskId = state.pathParameters['id']!;
-              final taskIndex = int.parse(taskId);
-
-              return DialogPage(
-                builder: (context) => DeleteTaskDialog(taskIndex: taskIndex),
-              );
-            },
-          ),
-        ],
       ),
     ],
   );
+}
+
+class MyAppRouter {
+  static GoRouter? _instance;
+
+  static GoRouter get instance => _instance ??= createRouter();
+
+  static set instance(GoRouter? router) {
+    _instance = router;
+  }
 }

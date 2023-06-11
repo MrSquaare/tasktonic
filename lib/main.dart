@@ -50,15 +50,13 @@ Future<void> main() async {
   runApp(
     MyAppWrapper(
       perAppLocale: perAppLocale,
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
-  final _router = createRouter();
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -77,7 +75,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      routerConfig: _router,
+      routerConfig: MyAppRouter.instance,
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),

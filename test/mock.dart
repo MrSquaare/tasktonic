@@ -8,6 +8,6 @@ void mockPathProviderChannel(String path) {
     return path;
   }
 
-  TestDefaultBinaryMessengerBinding.instance?.defaultBinaryMessenger
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(channel, handler);
 }
