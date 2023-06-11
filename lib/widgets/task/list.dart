@@ -1,23 +1,30 @@
+import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 import '../../models/task.dart';
-import '../../providers/task.dart';
 import '../../utilities/date.dart';
 
-class TaskList extends ConsumerWidget {
-  const TaskList({super.key, required this.tasks});
+typedef TaskListItemToggle = void Function(int index, Task task);
+typedef TaskListItemNavigate = void Function(int index, Task task);
+
+class TaskList extends StatelessWidget {
+  const TaskList({
+    super.key,
+    required this.tasks,
+    this.onToggle,
+    this.onNavigate,
+  });
 
   final Iterable<Task> tasks;
+  final TaskListItemToggle? onToggle;
+  final TaskListItemNavigate? onNavigate;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return ListView(
-      children: tasks.map((task) {
-        final index = tasks.toList().indexOf(task);
+      children: tasks.mapIndexed((index, task) {
         final date = dateStringToDateTime(task.date);
         final dateFormat = date != null && date.year == DateTime.now().year
             ? DateFormat.MMMd(context.locale.toString())
@@ -68,10 +75,10 @@ class TaskList extends ConsumerWidget {
           ),
           tileColor: index % 2 == 1 ? Colors.grey[200] : null,
           onTap: () {
-            ref.read(taskProvider.notifier).toggleTask(index, task);
+            if (onToggle != null) onToggle!(index, task);
           },
           onLongPress: () {
-            context.push('/task/$index/details');
+            if (onNavigate != null) onNavigate!(index, task);
           },
         );
       }).toList(),
