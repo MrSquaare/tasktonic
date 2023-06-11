@@ -23,9 +23,9 @@ import 'package:tasktonic/router.dart';
 import 'package:tasktonic/screens/language_settings.dart';
 import 'package:tasktonic/wrapper.dart';
 
-import 'controller.dart';
-import 'mock.dart';
-import 'utility.dart';
+import '__helpers__/controller.dart';
+import '__helpers__/mock.dart';
+import '__helpers__/utility.dart';
 
 void main() async {
   Directory? testDirectory;

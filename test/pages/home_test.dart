@@ -11,7 +11,7 @@ import 'package:tasktonic/pages/home.dart';
 import 'package:tasktonic/providers/task.dart';
 import 'package:tasktonic/wrapper.dart';
 
-import '../widget.dart';
+import '../__helpers__/widget.dart';
 
 class MockTaskNotifier extends AsyncNotifier<Iterable<Task>>
     with Mock
