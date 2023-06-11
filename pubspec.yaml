@@ -32,8 +32,10 @@ dependencies:
     sdk: flutter
 
   android_intent_plus: ^4.0.1
+  collection: ^1.17.1
   device_info_plus: ^9.0.2
   easy_localization: ^3.0.2
+  event_bus: ^2.0.0
   flutter_native_splash: ^2.3.1
   flutter_riverpod: ^2.3.6
   flutter_form_builder: ^9.0.0
@@ -46,7 +48,6 @@ dependencies:
   styled_widget: ^0.4.1
   uuid: ^3.0.7
   awesome_notifications: ^0.7.5-dev.3
-  event_bus: ^2.0.0
 
 dependency_overrides:
   intl: ^0.18.1
