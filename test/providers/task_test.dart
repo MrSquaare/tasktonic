@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:awesome_notifications/awesome_notifications_platform_interface.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:mockito/mockito.dart';
@@ -215,6 +216,8 @@ void main() {
 
     taskNotifier.createTaskNotification(index, task);
 
+    final parsedTimeZoneName = DateFormat('').parse('').timeZoneName;
+
     verify(
       mock.createNotification(
         content: argThat(
@@ -238,7 +241,11 @@ void main() {
               .having((c) => c.day, 'day', 1)
               .having((c) => c.hour, 'hour', 10)
               .having((c) => c.minute, 'minute', 0)
-              .having((c) => c.timeZone, 'timeZone', 'CET'),
+              .having(
+                (c) => c.timeZone,
+                'timeZone',
+                parsedTimeZoneName,
+              ),
           named: 'schedule',
         ),
       ),
