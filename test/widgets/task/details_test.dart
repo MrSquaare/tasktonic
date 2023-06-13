@@ -9,160 +9,162 @@ import 'package:tasktonic/wrapper.dart';
 import '../../__helpers__/widget.dart';
 
 void main() {
-  final currentYear = DateTime.now().year;
+  group('TaskDetails', () {
+    final currentYear = DateTime.now().year;
 
-  setUpAll(() async {
-    TestWidgetsFlutterBinding.ensureInitialized();
+    setUpAll(() async {
+      TestWidgetsFlutterBinding.ensureInitialized();
 
-    SharedPreferences.setMockInitialValues({});
+      SharedPreferences.setMockInitialValues({});
 
-    await EasyLocalization.ensureInitialized();
-  });
-
-  testWidgets('should display task name and description', (tester) async {
-    await tester.runAsync(() async {
-      final task = Task(
-        name: 'Test Task',
-        description: 'Test Description',
-      );
-
-      await tester.pumpWidget(
-        MyAppWrapper(
-          child: MaterialAppTest(
-            home: Scaffold(
-              body: TaskDetails(task: task),
-            ),
-          ),
-        ),
-      );
-
-      await tester.pumpAndSettle();
-
-      expect(find.text('Test Task'), findsOneWidget);
-      expect(find.text('Test Description'), findsOneWidget);
+      await EasyLocalization.ensureInitialized();
     });
-  });
 
-  testWidgets('should display task date and reminder', (tester) async {
-    await tester.runAsync(() async {
-      final task = Task(
-        name: 'Test Task',
-        date: '$currentYear-01-01',
-        reminder: '12:00',
-      );
+    testWidgets('should display task name and description', (tester) async {
+      await tester.runAsync(() async {
+        final task = Task(
+          name: 'Test Task',
+          description: 'Test Description',
+        );
 
-      await tester.pumpWidget(
-        MyAppWrapper(
-          child: MaterialAppTest(
-            home: Scaffold(
-              body: TaskDetails(task: task),
+        await tester.pumpWidget(
+          MyAppWrapper(
+            child: MaterialAppTest(
+              home: Scaffold(
+                body: TaskDetails(task: task),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-      expect(find.text('For the January 1'), findsOneWidget);
-      expect(find.text('Reminder at 12:00'), findsOneWidget);
+        expect(find.text('Test Task'), findsOneWidget);
+        expect(find.text('Test Description'), findsOneWidget);
+      });
     });
-  });
 
-  testWidgets('should display only task date', (tester) async {
-    await tester.runAsync(() async {
-      final task = Task(
-        name: 'Test Task',
-        date: '$currentYear-01-01',
-      );
+    testWidgets('should display task date and reminder', (tester) async {
+      await tester.runAsync(() async {
+        final task = Task(
+          name: 'Test Task',
+          date: '$currentYear-01-01',
+          reminder: '12:00',
+        );
 
-      await tester.pumpWidget(
-        MyAppWrapper(
-          child: MaterialAppTest(
-            home: Scaffold(
-              body: TaskDetails(task: task),
+        await tester.pumpWidget(
+          MyAppWrapper(
+            child: MaterialAppTest(
+              home: Scaffold(
+                body: TaskDetails(task: task),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-      expect(find.text('For the January 1'), findsOneWidget);
-      expect(find.text('Reminder at 12:00'), findsNothing);
+        expect(find.text('For the January 1'), findsOneWidget);
+        expect(find.text('Reminder at 12:00'), findsOneWidget);
+      });
     });
-  });
 
-  testWidgets('should display task date with year', (tester) async {
-    await tester.runAsync(() async {
-      final task = Task(
-        name: 'Test Task',
-        date: '${currentYear + 1}-01-01',
-      );
+    testWidgets('should display only task date', (tester) async {
+      await tester.runAsync(() async {
+        final task = Task(
+          name: 'Test Task',
+          date: '$currentYear-01-01',
+        );
 
-      await tester.pumpWidget(
-        MyAppWrapper(
-          child: MaterialAppTest(
-            home: Scaffold(
-              body: TaskDetails(task: task),
+        await tester.pumpWidget(
+          MyAppWrapper(
+            child: MaterialAppTest(
+              home: Scaffold(
+                body: TaskDetails(task: task),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-      expect(
-        find.text('For the January 1, ${currentYear + 1}'),
-        findsOneWidget,
-      );
+        expect(find.text('For the January 1'), findsOneWidget);
+        expect(find.text('Reminder at 12:00'), findsNothing);
+      });
     });
-  });
 
-  // This shouldn't happen, but it's here just in case
-  testWidgets('should display only task reminder', (tester) async {
-    await tester.runAsync(() async {
-      final task = Task(
-        name: 'Test Task',
-        reminder: '12:00',
-      );
+    testWidgets('should display task date with year', (tester) async {
+      await tester.runAsync(() async {
+        final task = Task(
+          name: 'Test Task',
+          date: '${currentYear + 1}-01-01',
+        );
 
-      await tester.pumpWidget(
-        MyAppWrapper(
-          child: MaterialAppTest(
-            home: Scaffold(
-              body: TaskDetails(task: task),
+        await tester.pumpWidget(
+          MyAppWrapper(
+            child: MaterialAppTest(
+              home: Scaffold(
+                body: TaskDetails(task: task),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-      expect(find.text('For the January 1'), findsNothing);
-      expect(find.text('Reminder at 12:00'), findsOneWidget);
+        expect(
+          find.text('For the January 1, ${currentYear + 1}'),
+          findsOneWidget,
+        );
+      });
     });
-  });
 
-  testWidgets('should display no date or reminder', (tester) async {
-    await tester.runAsync(() async {
-      final task = Task(
-        name: 'Test Task',
-      );
+    // This shouldn't happen, but it's here just in case
+    testWidgets('should display only task reminder', (tester) async {
+      await tester.runAsync(() async {
+        final task = Task(
+          name: 'Test Task',
+          reminder: '12:00',
+        );
 
-      await tester.pumpWidget(
-        MyAppWrapper(
-          child: MaterialAppTest(
-            home: Scaffold(
-              body: TaskDetails(task: task),
+        await tester.pumpWidget(
+          MyAppWrapper(
+            child: MaterialAppTest(
+              home: Scaffold(
+                body: TaskDetails(task: task),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-      expect(find.text('For the January 1'), findsNothing);
-      expect(find.text('Reminder at 12:00'), findsNothing);
+        expect(find.text('For the January 1'), findsNothing);
+        expect(find.text('Reminder at 12:00'), findsOneWidget);
+      });
+    });
+
+    testWidgets('should display no date or reminder', (tester) async {
+      await tester.runAsync(() async {
+        final task = Task(
+          name: 'Test Task',
+        );
+
+        await tester.pumpWidget(
+          MyAppWrapper(
+            child: MaterialAppTest(
+              home: Scaffold(
+                body: TaskDetails(task: task),
+              ),
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        expect(find.text('For the January 1'), findsNothing);
+        expect(find.text('Reminder at 12:00'), findsNothing);
+      });
     });
   });
 }
