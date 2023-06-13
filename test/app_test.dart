@@ -142,6 +142,54 @@ void main() async {
     });
   });
 
+  testWidgets('Should create task with date and reminder',
+      (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      final box = Hive.box<Task>('tasks');
+
+      await tester.pumpWidget(
+        const MyAppWrapper(
+          child: MyApp(),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.text('Test Task'), findsNothing);
+
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      final textFields = find.byType(TextField);
+
+      await tester.tap(textFields.at(0));
+      await tester.pumpAndSettle();
+      await tester.enterText(textFields.at(0), 'Test Task');
+      await tester.tap(textFields.at(1));
+      await tester.pumpAndSettle();
+      await tester.enterText(textFields.at(1), 'Test Description');
+      await tester.tap(textFields.at(2));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('17'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('OK'));
+      await tester.pumpAndSettle();
+      await tester.tap(textFields.at(3));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('12'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('OK'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(TextButton).at(1));
+      await box.flush();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ListTile), findsOneWidget);
+      expect(find.text('Test Task'), findsOneWidget);
+      expect(find.byType(Chip), findsNWidgets(2));
+    });
+  });
+
   testWidgets('Should cancel create task', (WidgetTester tester) async {
     await tester.runAsync(() async {
       await tester.pumpWidget(
@@ -309,6 +357,64 @@ void main() async {
       expect(find.byType(ListTile), findsOneWidget);
       expect(find.text('Test Task Edited'), findsNWidgets(2));
       expect(find.text('Test Description Edited'), findsOneWidget);
+    });
+  });
+
+  testWidgets('Should add date and reminder to existing task',
+      (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      final box = Hive.box<Task>('tasks');
+
+      await box.add(
+        Task(
+          name: 'Test Task',
+          description: 'Test Description',
+        ),
+      );
+
+      await tester.pumpWidget(
+        const MyAppWrapper(
+          child: MyApp(),
+        ),
+      );
+
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.byType(ListTile), findsOneWidget);
+
+      await longPress(tester, find.byType(ListTile));
+      await tester.pumpAndSettle();
+
+      final bottomSheet = find.byType(BottomSheet);
+      final bottomSheetButtons = find.descendant(
+        of: bottomSheet,
+        matching: find.byType(TextButton),
+      );
+
+      await tester.tap(bottomSheetButtons.at(0));
+      await tester.pumpAndSettle();
+
+      final textFields = find.byType(TextField);
+
+      await tester.tap(textFields.at(2));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('17'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('OK'));
+      await tester.pumpAndSettle();
+      await tester.tap(textFields.at(3));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('12'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('OK'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(TextButton).at(1));
+      await box.flush();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ListTile), findsOneWidget);
+      expect(find.text('Test Task'), findsNWidgets(2));
+      expect(find.byType(Chip), findsNWidgets(4));
     });
   });
 
