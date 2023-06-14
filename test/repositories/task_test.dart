@@ -5,7 +5,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:tasktonic/models/task.dart';
 import 'package:tasktonic/repositories/task.dart';
 
-import '../utility.dart';
+import '../__helpers__/utility.dart';
 
 void main() {
   Directory? testDirectory;

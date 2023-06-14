@@ -34,7 +34,15 @@ class HomePage extends ConsumerWidget {
             return Text('home.no_task'.tr()).center();
           }
 
-          return TaskList(tasks: data);
+          return TaskList(
+            tasks: data,
+            onToggle: (index, task) {
+              ref.read(taskProvider.notifier).toggleTask(index, task);
+            },
+            onNavigate: (index, task) {
+              context.push('/task/$index/details');
+            },
+          );
         },
         loading: () => const CircularProgressIndicator().center(),
         error: (error, _) => Text('home.error'.tr()).center(),

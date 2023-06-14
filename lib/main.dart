@@ -1,4 +1,6 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -10,6 +12,27 @@ import 'wrapper.dart';
 
 Future<void> setup() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelGroupKey: 'general_channel_group',
+        channelKey: 'reminder_channel',
+        channelName: 'Reminder',
+        channelDescription: 'Reminder notifications',
+        defaultColor: Colors.blue,
+        ledColor: Colors.white,
+      )
+    ],
+    channelGroups: [
+      NotificationChannelGroup(
+        channelGroupKey: 'general_channel_group',
+        channelGroupName: 'General',
+      )
+    ],
+    debug: kDebugMode,
+  );
 
   await EasyLocalization.ensureInitialized();
   await Hive.initFlutter();
@@ -27,15 +50,13 @@ Future<void> main() async {
   runApp(
     MyAppWrapper(
       perAppLocale: perAppLocale,
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget with WidgetsBindingObserver {
-  MyApp({super.key});
-
-  final _router = createRouter();
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -54,7 +75,13 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      routerConfig: _router,
+      routerConfig: MyAppRouter.instance,
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!,
+        );
+      },
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,

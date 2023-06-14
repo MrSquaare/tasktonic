@@ -12,10 +12,11 @@ class DeleteTaskDialog extends ConsumerWidget {
   final int taskIndex;
 
   _onDelete(BuildContext context, WidgetRef ref) {
-    ref
-        .read(taskProvider.notifier)
-        .deleteTask(taskIndex)
-        .then((_) => context.go('/'));
+    ref.read(taskProvider.notifier).deleteTask(taskIndex).then((value) async {
+      context.go('/');
+
+      ref.read(taskProvider.notifier).cancelTaskNotification(taskIndex);
+    });
   }
 
   @override

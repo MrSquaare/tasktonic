@@ -25,6 +25,12 @@
     },
     "description": {
       "label": "Description"
+    },
+    "date": {
+      "label": "Date"
+    },
+    "reminder": {
+      "label": "Rappel"
     }
   },
   "add_task": {
@@ -48,6 +54,8 @@
   },
   "task_details": {
     "no_description": "Aucune description",
+    "date": "Pour le {date}",
+    "reminder": "Rappel à {time}",
     "edit": "Éditer",
     "delete": "Supprimer"
   }

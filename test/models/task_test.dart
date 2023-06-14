@@ -47,7 +47,7 @@ void main() {
 
     expect(
       task.toString(),
-      'Task{name: Test Task, description: Test Description, status: TaskStatus.todo}',
+      'Task{name: Test Task, description: Test Description, status: TaskStatus.todo, date: null, reminder: null}',
     );
   });
 }

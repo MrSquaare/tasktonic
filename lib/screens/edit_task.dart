@@ -7,7 +7,8 @@ import 'package:styled_widget/styled_widget.dart';
 
 import '../models/task.dart';
 import '../providers/task.dart';
-import '../widgets/task/task_form.dart';
+import '../utilities/date.dart';
+import '../widgets/task/form.dart';
 
 class EditTaskScreen extends ConsumerWidget {
   EditTaskScreen({super.key, required this.taskIndex});
@@ -19,15 +20,28 @@ class EditTaskScreen extends ConsumerWidget {
   _onEdit(BuildContext context, WidgetRef ref) {
     if (!_formKey.currentState!.saveAndValidate()) return;
 
+    final DateTime? dateValue = _formKey.currentState!.value['date'];
+    final DateTime? reminderValue = _formKey.currentState!.value['reminder'];
+
     final task = Task(
       name: _formKey.currentState!.value['name'],
       description: _formKey.currentState!.value['description'],
+      date: dateTimeToDateString(dateValue),
+      reminder: dateTimeToTimeString(reminderValue),
     );
 
     ref
         .read(taskProvider.notifier)
         .updateTask(taskIndex, task)
-        .then((_) => context.pop());
+        .then((value) async {
+      context.pop();
+
+      if (dateValue != null && reminderValue != null) {
+        ref.read(taskProvider.notifier).createTaskNotification(taskIndex, task);
+      } else {
+        ref.read(taskProvider.notifier).cancelTaskNotification(taskIndex);
+      }
+    });
   }
 
   @override

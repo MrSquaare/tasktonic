@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../provider.dart';
+import '../info.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
