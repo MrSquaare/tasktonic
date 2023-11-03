@@ -30,7 +30,7 @@ User creates a task, mark it as done, edit it's name and description and delete 
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
-      expect(find.text('There is no task'), findsOneWidget);
+      expect(find.text('There is no task for this day'), findsOneWidget);
 
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
@@ -103,7 +103,7 @@ User creates a task, mark it as done, edit it's name and description and delete 
       expect(alertDialog, findsNothing);
       expect(bottomSheet, findsNothing);
       expect(find.byType(ListTile), findsNothing);
-      expect(find.text('There is no task'), findsOneWidget);
+      expect(find.text('There is no task for this day'), findsOneWidget);
     });
   });
 }

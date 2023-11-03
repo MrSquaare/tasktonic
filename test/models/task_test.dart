@@ -3,7 +3,7 @@ import 'package:tasktonic/models/task.dart';
 
 void main() {
   test('Should create a Task instance', () {
-    final task = Task(name: 'Test Task');
+    final task = Task(name: 'Test Task', dateStr: '2021-01-01');
 
     expect(task, isA<Task>());
   });
@@ -13,21 +13,24 @@ void main() {
       name: 'Test Task',
       description: 'Test Description',
       status: TaskStatus.done,
+      dateStr: '2021-01-01',
     );
 
     expect(task.name, 'Test Task');
     expect(task.description, 'Test Description');
     expect(task.status, TaskStatus.done);
+    expect(task.dateStr, '2021-01-01');
+    expect(task.date, DateTime(2021, 1, 1));
   });
 
   test('Should have todo status by default', () {
-    final task = Task(name: 'Test Task');
+    final task = Task(name: 'Test Task', dateStr: '2021-01-01');
 
     expect(task.status, TaskStatus.todo);
   });
 
   test('Should switch from todo to done when toggle method is called', () {
-    final task = Task(name: 'Test Task');
+    final task = Task(name: 'Test Task', dateStr: '2021-01-01');
 
     task.toggle();
 
@@ -35,7 +38,8 @@ void main() {
   });
 
   test('Should switch from done to todo when toggle method is called', () {
-    final task = Task(name: 'Test Task', status: TaskStatus.done);
+    final task =
+        Task(name: 'Test Task', dateStr: '2021-01-01', status: TaskStatus.done);
 
     task.toggle();
 
@@ -43,11 +47,15 @@ void main() {
   });
 
   test('Should return a String representation when toString is called', () {
-    final task = Task(name: 'Test Task', description: 'Test Description');
+    final task = Task(
+      name: 'Test Task',
+      dateStr: '2021-01-01',
+      description: 'Test Description',
+    );
 
     expect(
       task.toString(),
-      'Task{name: Test Task, description: Test Description, status: TaskStatus.todo, date: null, reminder: null}',
+      'Task{name: Test Task, description: Test Description, status: TaskStatus.todo, dateStr: 2021-01-01, reminderStr: null, rrule: null}',
     );
   });
 }

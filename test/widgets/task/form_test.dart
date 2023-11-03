@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rrule/rrule.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tasktonic/models/task.dart';
 import 'package:tasktonic/widgets/task/form.dart';
@@ -11,6 +12,8 @@ import '../../__helpers__/widget.dart';
 
 void main() {
   group('TaskForm', () {
+    final currentDate = DateTime.now();
+
     setUpAll(() async {
       TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -19,7 +22,7 @@ void main() {
       await EasyLocalization.ensureInitialized();
     });
 
-    testWidgets('should display empty form fields',
+    testWidgets('should display empty form fields with current date',
         (WidgetTester tester) async {
       await tester.runAsync(() async {
         final formKey = GlobalKey<FormBuilderState>();
@@ -40,18 +43,28 @@ void main() {
 
         expect(find.text('Test Task'), findsNothing);
         expect(find.text('This is a test task'), findsNothing);
-        expect(find.text('2022-02-01'), findsNothing);
+        expect(
+          find.text(
+              '${currentDate.day}/${currentDate.month}/${currentDate.year}'),
+          findsNothing,
+        );
         expect(find.text('12:00'), findsNothing);
       });
     });
 
-    testWidgets('should display minimal filled form fields',
+    testWidgets('should display filled form fields',
         (WidgetTester tester) async {
       await tester.runAsync(() async {
         final formKey = GlobalKey<FormBuilderState>();
         final task = Task(
           name: 'Test Task',
           description: 'This is a test task',
+          dateStr: '2022-01-01',
+          reminderStr: '12:00',
+          rrule: RecurrenceRule(
+            frequency: Frequency.daily,
+            interval: 1,
+          ),
         );
 
         await tester.pumpWidget(
@@ -71,102 +84,26 @@ void main() {
 
         expect(find.text('Test Task'), findsOneWidget);
         expect(find.text('This is a test task'), findsOneWidget);
-        expect(find.text('Date'), findsOneWidget);
-        expect(find.text('Reminder'), findsNothing);
-      });
-    });
-
-    testWidgets('should display all filled form fields',
-        (WidgetTester tester) async {
-      await tester.runAsync(() async {
-        final formKey = GlobalKey<FormBuilderState>();
-        final task = Task(
-          name: 'Test Task',
-          description: 'This is a test task',
-          date: '2022-02-01',
-          reminder: '12:00',
-        );
-
-        await tester.pumpWidget(
-          MyAppWrapper(
-            child: MaterialAppTest(
-              home: Scaffold(
-                body: TaskForm(
-                  formKey: formKey,
-                  task: task,
-                ),
-              ),
-            ),
-          ),
-        );
-
-        await tester.pumpAndSettle();
-
-        expect(find.text('Test Task'), findsOneWidget);
-        expect(find.text('This is a test task'), findsOneWidget);
-        expect(find.text('2/1/2022'), findsOneWidget);
+        expect(find.text('1/1/2022'), findsOneWidget);
         expect(find.text('12:00'), findsOneWidget);
-      });
-    });
 
-    testWidgets('should validate required fields', (WidgetTester tester) async {
-      await tester.runAsync(() async {
-        final formKey = GlobalKey<FormBuilderState>();
+        final checkbox = find.byType(Checkbox).first;
 
-        await tester.pumpWidget(
-          MyAppWrapper(
-            child: MaterialAppTest(
-              home: Scaffold(
-                body: TaskForm(
-                  formKey: formKey,
-                ),
-              ),
-            ),
-          ),
-        );
+        expect(checkbox, findsOneWidget);
+        expect(tester.widget<Checkbox>(checkbox).value, isTrue);
 
-        await tester.pumpAndSettle();
+        final dailyRadio = find
+            .byWidgetPredicate(
+              (widget) => widget is Radio,
+            )
+            .first;
 
-        formKey.currentState!.saveAndValidate();
-
-        await tester.pumpAndSettle();
-
-        expect(find.text('Name is required'), findsOneWidget);
-      });
-    });
-
-    testWidgets('should clear date and reminder fields',
-        (WidgetTester tester) async {
-      await tester.runAsync(() async {
-        final formKey = GlobalKey<FormBuilderState>();
-        final task = Task(
-          name: 'Test Task',
-          description: 'This is a test task',
-          date: '2022-02-01',
-          reminder: '12:00',
-        );
-
-        await tester.pumpWidget(
-          MyAppWrapper(
-            child: MaterialAppTest(
-              home: Scaffold(
-                body: TaskForm(
-                  formKey: formKey,
-                  task: task,
-                ),
-              ),
-            ),
-          ),
-        );
-
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.byType(IconButton).first);
-
-        await tester.pumpAndSettle();
-
-        expect(formKey.currentState?.fields['date']?.value, isNull);
-        expect(formKey.currentState?.fields['reminder']?.value, isNull);
+        expect(dailyRadio, findsOneWidget);
+        expect(tester.widget<Radio>(dailyRadio).value, Frequency.daily);
+        expect(find.text('Daily'), findsOneWidget);
+        expect(find.text('Weekly'), findsOneWidget);
+        expect(find.text('Monthly'), findsOneWidget);
+        expect(find.text('Yearly'), findsOneWidget);
       });
     });
 
@@ -176,8 +113,8 @@ void main() {
         final task = Task(
           name: 'Test Task',
           description: 'This is a test task',
-          date: '2022-02-01',
-          reminder: '12:00',
+          dateStr: '2022-01-01',
+          reminderStr: '12:00',
         );
 
         await tester.pumpWidget(
@@ -199,8 +136,41 @@ void main() {
 
         await tester.pumpAndSettle();
 
-        expect(formKey.currentState?.fields['date']?.value, isNotNull);
         expect(formKey.currentState?.fields['reminder']?.value, isNull);
+      });
+    });
+
+    testWidgets('should validate required all form fields',
+        (WidgetTester tester) async {
+      await tester.runAsync(() async {
+        final formKey = GlobalKey<FormBuilderState>();
+
+        await tester.pumpWidget(
+          MyAppWrapper(
+            child: MaterialAppTest(
+              home: Scaffold(
+                body: TaskForm(
+                  formKey: formKey,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        // Tap on the checkbox
+        final checkbox = find.byType(Checkbox).first;
+
+        await tester.tap(checkbox);
+        await tester.pumpAndSettle();
+
+        formKey.currentState!.saveAndValidate();
+
+        await tester.pumpAndSettle();
+
+        expect(find.text('Name is required'), findsOneWidget);
+        expect(find.text('Repeat frequency is required'), findsOneWidget);
       });
     });
   });
