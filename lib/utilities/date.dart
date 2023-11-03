@@ -1,28 +1,22 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:intl/intl.dart';
 
 final dateStringFormat = DateFormat('yyyy-MM-dd');
 final timeStringFormat = DateFormat('HH:mm');
 
-String? dateTimeToDateString(DateTime? dateTime) {
-  if (dateTime == null) return null;
+class DateUtilities {
+  static String formatDate(DateTime date) {
+    return dateStringFormat.format(date);
+  }
 
-  return dateStringFormat.format(dateTime);
-}
+  static String formatTime(DateTime time) {
+    return timeStringFormat.format(time);
+  }
 
-DateTime? dateStringToDateTime(String? dateString) {
-  if (dateString == null) return null;
+  static DateTime parseDate(String date) {
+    return dateStringFormat.parse(date);
+  }
 
-  return dateStringFormat.parse(dateString);
-}
-
-String? dateTimeToTimeString(DateTime? dateTime) {
-  if (dateTime == null) return null;
-
-  return timeStringFormat.format(dateTime);
-}
-
-DateTime? timeStringToDateTime(String? timeString) {
-  if (timeString == null) return null;
-
-  return timeStringFormat.parse(timeString);
+  static DateTime parseTime(String time) {
+    return timeStringFormat.parse(time);
+  }
 }

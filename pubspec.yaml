@@ -44,9 +44,12 @@ dependencies:
   go_router: ^11.1.2
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  intl: ^0.18.1
   riverpod: ^2.4.3
+  rrule: ^0.2.14
   shared_preferences: ^2.2.1
   styled_widget: ^0.4.1
+  table_calendar: ^3.0.9
   uuid: ^4.1.0
 
 dev_dependencies:

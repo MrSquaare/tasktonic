@@ -8,30 +8,30 @@ import '../providers/task.dart';
 import '../widgets/task/details.dart';
 
 class TaskDetailsScreen extends ConsumerWidget {
-  const TaskDetailsScreen({super.key, required this.taskIndex});
+  const TaskDetailsScreen({super.key, required this.taskId});
 
-  final int taskIndex;
+  final String taskId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     try {
-      final task = ref.watch(taskProvider).requireValue.elementAt(taskIndex);
+      final task = ref.watch(taskProvider).requireValue[taskId]!;
 
       return <Widget>[
         TaskDetails(task: task).padding(all: 16),
         <Widget>[
           TextButton(
-            onPressed: () => context.push('/task/$taskIndex/edit'),
+            onPressed: () => context.push('/task/$taskId/edit'),
             child: Text('task_details.edit'.tr()),
           ).expanded(),
           TextButton(
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
             ),
-            onPressed: () => context.push('/task/$taskIndex/delete'),
+            onPressed: () => context.push('/task/$taskId/delete'),
             child: Text('task_details.delete'.tr()),
           ).expanded(),
-        ].toRow()
+        ].toRow(),
       ].toColumn(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

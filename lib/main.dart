@@ -23,13 +23,13 @@ Future<void> setup() async {
         channelDescription: 'Reminder notifications',
         defaultColor: Colors.blue,
         ledColor: Colors.white,
-      )
+      ),
     ],
     channelGroups: [
       NotificationChannelGroup(
         channelGroupKey: 'general_channel_group',
         channelGroupName: 'General',
-      )
+      ),
     ],
     debug: kDebugMode,
   );

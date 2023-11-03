@@ -7,22 +7,23 @@ import 'package:styled_widget/styled_widget.dart';
 import '../providers/task.dart';
 
 class DeleteTaskDialog extends ConsumerWidget {
-  const DeleteTaskDialog({super.key, required this.taskIndex});
+  const DeleteTaskDialog({super.key, required this.taskId});
 
-  final int taskIndex;
+  final String taskId;
 
   _onDelete(BuildContext context, WidgetRef ref) {
-    ref.read(taskProvider.notifier).deleteTask(taskIndex).then((value) async {
+    ref.read(taskProvider.notifier).deleteTask(taskId).then((value) async {
       context.go('/');
 
-      ref.read(taskProvider.notifier).cancelTaskNotification(taskIndex);
+      ref.read(taskProvider.notifier).cancelTaskNotification(taskId);
     });
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     try {
-      final task = ref.read(taskProvider).requireValue.elementAt(taskIndex);
+      final currentTaskId = taskId;
+      final task = ref.read(taskProvider).requireValue[currentTaskId]!;
 
       return AlertDialog(
         title: Text('delete_task.title'.tr()),
