@@ -45,7 +45,8 @@ void main() {
         expect(find.text('This is a test task'), findsNothing);
         expect(
           find.text(
-              '${currentDate.day}/${currentDate.month}/${currentDate.year}'),
+            '${currentDate.day}/${currentDate.month}/${currentDate.year}',
+          ),
           findsNothing,
         );
         expect(find.text('12:00'), findsNothing);
