@@ -66,6 +66,11 @@ class TaskNotifier extends AsyncNotifier<Map<dynamic, Task>> {
         body: task.description,
         category: NotificationCategory.Reminder,
         wakeUpScreen: true,
+        payload: {
+          'id': task.id,
+          'reminder': task.reminderStr,
+          'rrule': task.rrule?.toString(),
+        },
       ),
       schedule: NotificationCalendar(
         year: date.year,
