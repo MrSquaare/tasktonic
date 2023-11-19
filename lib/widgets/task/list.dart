@@ -75,10 +75,10 @@ class TaskList extends StatelessWidget {
             ]
                 .whereNotNull()
                 .toList()
-                .toRow(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  separator: const SizedBox(width: 4),
+                .toWrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  alignment: WrapAlignment.start,
+                  spacing: 4.0,
                 )
                 .padding(top: 4),
           ].toColumn(

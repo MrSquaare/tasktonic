@@ -64,7 +64,8 @@ class TaskDetails extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             separator: const SizedBox(width: 4),
           )
-          .padding(top: 8),
+          .padding(top: 8)
+          .scrollable(scrollDirection: Axis.horizontal),
     ].toColumn(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,

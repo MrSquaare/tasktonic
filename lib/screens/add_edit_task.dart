@@ -80,9 +80,10 @@ class AddEditTaskScreen extends ConsumerWidget {
               Text((task != null ? 'edit_task.title' : 'add_task.title').tr()),
         ),
         body: <Widget>[
-          SingleChildScrollView(
-            child: TaskForm(formKey: _formKey, task: task).padding(all: 16),
-          ).expanded(),
+          TaskForm(formKey: _formKey, task: task)
+              .padding(all: 16)
+              .scrollable()
+              .expanded(),
           Container(
             child: <Widget>[
               TextButton(
