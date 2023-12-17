@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -68,42 +69,58 @@ class AddEditTaskScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    try {
-      final currentTaskId = taskId;
-      final task = currentTaskId != null
-          ? ref.read(taskProvider).requireValue[currentTaskId]
-          : null;
+    final currentTaskId = taskId;
+    final tasks = ref.watch(taskProvider);
 
-      return Scaffold(
-        appBar: AppBar(
-          title:
-              Text((task != null ? 'edit_task.title' : 'add_task.title').tr()),
-        ),
-        body: <Widget>[
-          TaskForm(formKey: _formKey, task: task)
-              .padding(all: 16)
-              .scrollable()
-              .expanded(),
-          Container(
-            child: <Widget>[
-              TextButton(
-                onPressed: () => context.pop(),
-                child: Text(
-                  (task != null ? 'edit_task.cancel' : 'add_task.cancel').tr(),
-                ),
-              ).expanded(),
-              TextButton(
-                onPressed: () => _onSave(context, ref),
-                child: Text(
-                  (task != null ? 'edit_task.edit' : 'add_task.add').tr(),
-                ),
-              ).expanded(),
-            ].toRow(),
-          ),
-        ].toColumn(),
-      );
-    } catch (e) {
-      return Container();
-    }
+    return tasks.when(
+      data: (data) {
+        final task = currentTaskId != null ? data[currentTaskId] : null;
+
+        if (currentTaskId == null || task != null) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                (task != null ? 'edit_task.title' : 'add_task.title').tr(),
+              ),
+            ),
+            body: <Widget>[
+              TaskForm(formKey: _formKey, task: task)
+                  .padding(all: 16)
+                  .scrollable()
+                  .expanded(),
+              Container(
+                child: <Widget>[
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: Text(
+                      (task != null ? 'edit_task.cancel' : 'add_task.cancel')
+                          .tr(),
+                    ),
+                  ).expanded(),
+                  TextButton(
+                    onPressed: () => _onSave(context, ref),
+                    child: Text(
+                      (task != null ? 'edit_task.edit' : 'add_task.add').tr(),
+                    ),
+                  ).expanded(),
+                ].toRow(),
+              ),
+            ].toColumn(),
+          );
+        } else {
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/');
+            }
+          });
+
+          return Container();
+        }
+      },
+      loading: () => const CircularProgressIndicator().center(),
+      error: (error, _) => Text('add_task.error'.tr()).center(),
+    );
   }
 }
