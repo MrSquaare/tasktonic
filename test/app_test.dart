@@ -416,6 +416,56 @@ void main() async {
     });
   });
 
+  testWidgets('Should add repeat to existing task',
+      (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      final box = Hive.box<Task>('tasks');
+      final task = Task(
+        name: 'Test Task',
+        description: 'Test Description',
+        dateStr: currentDateStr,
+        reminderStr: '12:00',
+      );
+
+      await box.put(task.id, task);
+
+      await tester.pumpWidget(
+        const MyAppWrapper(
+          child: MyApp(),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ListTile), findsOneWidget);
+
+      await longPress(tester, find.byType(ListTile));
+      await tester.pumpAndSettle();
+
+      final bottomSheet = find.byType(BottomSheet);
+      final bottomSheetButtons = find.descendant(
+        of: bottomSheet,
+        matching: find.byType(TextButton),
+      );
+
+      await tester.tap(bottomSheetButtons.at(0));
+      await tester.pumpAndSettle();
+
+      final checkbox = find.byType(Checkbox);
+
+      await tester.tap(checkbox);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Daily'));
+      await tester.tap(find.byType(TextButton).at(1));
+      await box.flush();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ListTile), findsOneWidget);
+      expect(find.text('Test Task'), findsNWidgets(2));
+      expect(find.byType(Chip), findsNWidgets(4));
+    });
+  });
+
   testWidgets('Should cancel edit task', (WidgetTester tester) async {
     await tester.runAsync(() async {
       final box = Hive.box<Task>('tasks');
