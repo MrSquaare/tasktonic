@@ -6,10 +6,11 @@ bool hasPerAppLocale(AndroidDeviceInfo? info) {
   return info.version.sdkInt >= 33;
 }
 
-Future<AndroidDeviceInfo?> getAndroidInfo() async {
+Future<AndroidDeviceInfo?> getAndroidInfo(
+  DeviceInfoPlugin deviceInfoPlugin,
+) async {
   try {
-    final deviceInfo = DeviceInfoPlugin();
-    final androidInfo = await deviceInfo.androidInfo;
+    final androidInfo = await deviceInfoPlugin.androidInfo;
 
     return androidInfo;
   } catch (e) {
