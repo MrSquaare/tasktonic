@@ -132,5 +132,3 @@ void main() {
     });
   });
 }
-
-class TaskProvider {}
