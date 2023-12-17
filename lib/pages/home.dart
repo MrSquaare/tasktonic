@@ -33,7 +33,9 @@ class HomePage extends ConsumerWidget {
           return TaskCalendar(
             tasks: data.values,
             onToggle: (task) {
-              ref.read(taskProvider.notifier).toggleTask(task.id, task);
+              final provider = ref.read(taskProvider.notifier);
+
+              provider.toggleTask(task.id, task);
             },
             onNavigate: (task) {
               context.push('/task/${task.id}/details');
