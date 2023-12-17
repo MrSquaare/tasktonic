@@ -5,7 +5,6 @@
   },
   "home": {
     "title": "Home",
-    "no_task": "There is no task",
     "error": "An error occurred",
     "add": "Add"
   },
@@ -15,6 +14,9 @@
     "language": {
       "title": "Select a language"
     }
+  },
+  "task_list": {
+    "no_task":"There is no task for this day"
   },
   "task_form": {
     "name": {
@@ -31,6 +33,18 @@
     },
     "reminder": {
       "label": "Reminder"
+    },
+    "repeat": {
+      "label": "Repeat"
+    },
+    "repeat_frequency": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "error": {
+        "required": "Repeat frequency is required"
+      }
     }
   },
   "add_task": {

@@ -22,9 +22,9 @@ class MainScreen extends StatelessWidget {
           BottomNavigationBarItem(
             icon: const Icon(Icons.settings),
             label: 'navigation.settings'.tr(),
-          )
+          ),
         ],
-        currentIndex: state.location == '/' ? 0 : 1,
+        currentIndex: state.uri.toString() == '/' ? 0 : 1,
         onTap: (index) {
           context.go(index == 0 ? '/' : '/settings');
         },

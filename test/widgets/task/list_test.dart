@@ -11,13 +11,14 @@ import '../../__helpers__/controller.dart';
 import '../../__helpers__/widget.dart';
 
 class MockFunctions extends Mock {
-  void onToggle(int index, Task task);
-  void onNavigate(int index, Task task);
+  void onToggle(Task task);
+  void onNavigate(Task task);
 }
 
 void main() {
   group('TaskList', () {
-    final currentYear = DateTime.now().year;
+    final currentDate = DateTime.now();
+    final currentYear = currentDate.year;
 
     setUpAll(() async {
       TestWidgetsFlutterBinding.ensureInitialized();
@@ -32,15 +33,15 @@ void main() {
         final tasks = [
           Task(
             name: 'Task 1',
-            date: '2022-01-01',
-            reminder: '10:00',
             status: TaskStatus.todo,
+            dateStr: '2022-01-01',
+            reminderStr: '10:00',
           ),
           Task(
             name: 'Task 2',
-            date: '2022-01-02',
-            reminder: '11:00',
             status: TaskStatus.done,
+            dateStr: '2022-01-02',
+            reminderStr: '11:00',
           ),
         ];
 
@@ -67,15 +68,15 @@ void main() {
         final tasks = [
           Task(
             name: 'Task 1',
-            date: '2022-01-01',
-            reminder: '10:00',
             status: TaskStatus.todo,
+            dateStr: '2022-01-01',
+            reminderStr: '10:00',
           ),
           Task(
             name: 'Task 2',
-            date: '2022-01-02',
-            reminder: '11:00',
             status: TaskStatus.done,
+            dateStr: '2022-01-02',
+            reminderStr: '11:00',
           ),
         ];
 
@@ -93,11 +94,11 @@ void main() {
 
         await tester.tap(find.text('Task 1'));
 
-        verify(mock.onToggle(0, tasks[0])).called(1);
+        verify(mock.onToggle(tasks[0])).called(1);
 
         await tester.tap(find.text('Task 2'));
 
-        verify(mock.onToggle(1, tasks[1])).called(1);
+        verify(mock.onToggle(tasks[1])).called(1);
       });
     });
 
@@ -107,15 +108,15 @@ void main() {
         final tasks = [
           Task(
             name: 'Task 1',
-            date: '2022-01-01',
-            reminder: '10:00',
             status: TaskStatus.todo,
+            dateStr: '2022-01-01',
+            reminderStr: '10:00',
           ),
           Task(
             name: 'Task 2',
-            date: '2022-01-02',
-            reminder: '11:00',
             status: TaskStatus.done,
+            dateStr: '2022-01-02',
+            reminderStr: '11:00',
           ),
         ];
 
@@ -133,11 +134,11 @@ void main() {
 
         await longPress(tester, find.text('Task 1'));
 
-        verify(mock.onNavigate(0, tasks[0])).called(1);
+        verify(mock.onNavigate(tasks[0])).called(1);
 
         await longPress(tester, find.text('Task 2'));
 
-        verify(mock.onNavigate(1, tasks[1])).called(1);
+        verify(mock.onNavigate(tasks[1])).called(1);
       });
     });
 
@@ -146,15 +147,15 @@ void main() {
         final tasks = [
           Task(
             name: 'Task 1',
-            date: '$currentYear-01-01',
-            reminder: '10:00',
             status: TaskStatus.todo,
+            dateStr: '$currentYear-01-01',
+            reminderStr: '10:00',
           ),
           Task(
             name: 'Task 2',
-            date: '$currentYear-01-02',
-            reminder: '11:00',
             status: TaskStatus.done,
+            dateStr: '$currentYear-01-02',
+            reminderStr: '11:00',
           ),
         ];
 
@@ -182,13 +183,13 @@ void main() {
         final tasks = [
           Task(
             name: 'Task 1',
-            date: '$currentYear-01-01',
             status: TaskStatus.todo,
+            dateStr: '$currentYear-01-01',
           ),
           Task(
             name: 'Task 2',
-            date: '$currentYear-01-02',
             status: TaskStatus.done,
+            dateStr: '$currentYear-01-02',
           ),
         ];
 
@@ -216,13 +217,13 @@ void main() {
         final tasks = [
           Task(
             name: 'Task 1',
-            date: '${currentYear + 1}-01-01',
             status: TaskStatus.todo,
+            dateStr: '${currentYear + 1}-01-01',
           ),
           Task(
             name: 'Task 2',
-            date: '${currentYear + 1}-01-02',
             status: TaskStatus.done,
+            dateStr: '${currentYear + 1}-01-02',
           ),
         ];
 
@@ -240,73 +241,6 @@ void main() {
 
         expect(find.text('Jan 1, ${currentYear + 1}'), findsOneWidget);
         expect(find.text('Jan 2, ${currentYear + 1}'), findsOneWidget);
-      });
-    });
-
-    // This shouldn't happen, but it's here just in case
-    testWidgets('should display only task reminder', (tester) async {
-      await tester.runAsync(() async {
-        final tasks = [
-          Task(
-            name: 'Task 1',
-            reminder: '10:00',
-            status: TaskStatus.todo,
-          ),
-          Task(
-            name: 'Task 2',
-            reminder: '11:00',
-            status: TaskStatus.done,
-          ),
-        ];
-
-        await tester.pumpWidget(
-          MyAppWrapper(
-            child: MaterialAppTest(
-              home: Scaffold(
-                body: TaskList(tasks: tasks),
-              ),
-            ),
-          ),
-        );
-
-        await tester.pumpAndSettle();
-
-        expect(find.text('Jan 1'), findsNothing);
-        expect(find.text('10:00'), findsOneWidget);
-        expect(find.text('Jan 2'), findsNothing);
-        expect(find.text('11:00'), findsOneWidget);
-      });
-    });
-
-    testWidgets('should display no date or reminder', (tester) async {
-      await tester.runAsync(() async {
-        final tasks = [
-          Task(
-            name: 'Task 1',
-            status: TaskStatus.todo,
-          ),
-          Task(
-            name: 'Task 2',
-            status: TaskStatus.done,
-          ),
-        ];
-
-        await tester.pumpWidget(
-          MyAppWrapper(
-            child: MaterialAppTest(
-              home: Scaffold(
-                body: TaskList(tasks: tasks),
-              ),
-            ),
-          ),
-        );
-
-        await tester.pumpAndSettle();
-
-        expect(find.text('Jan 1'), findsNothing);
-        expect(find.text('10:00'), findsNothing);
-        expect(find.text('Jan 2'), findsNothing);
-        expect(find.text('11:00'), findsNothing);
       });
     });
   });

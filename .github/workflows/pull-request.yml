@@ -79,6 +79,9 @@ jobs:
       - name: Test
         run: flutter test --coverage
 
+      - name: Remove generated file from coverage
+        run: dart pub run remove_from_coverage -f coverage/lcov.info -r '\.g\.dart$'
+
       - name: Codecov
         uses: codecov/codecov-action@v3
         with:

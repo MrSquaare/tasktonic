@@ -10,7 +10,8 @@ import '../../__helpers__/widget.dart';
 
 void main() {
   group('TaskDetails', () {
-    final currentYear = DateTime.now().year;
+    final currentDate = DateTime.now();
+    final currentYear = currentDate.year;
 
     setUpAll(() async {
       TestWidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,7 @@ void main() {
         final task = Task(
           name: 'Test Task',
           description: 'Test Description',
+          dateStr: '2021-01-01',
         );
 
         await tester.pumpWidget(
@@ -44,36 +46,11 @@ void main() {
       });
     });
 
-    testWidgets('should display task date and reminder', (tester) async {
-      await tester.runAsync(() async {
-        final task = Task(
-          name: 'Test Task',
-          date: '$currentYear-01-01',
-          reminder: '12:00',
-        );
-
-        await tester.pumpWidget(
-          MyAppWrapper(
-            child: MaterialAppTest(
-              home: Scaffold(
-                body: TaskDetails(task: task),
-              ),
-            ),
-          ),
-        );
-
-        await tester.pumpAndSettle();
-
-        expect(find.text('For the January 1'), findsOneWidget);
-        expect(find.text('Reminder at 12:00'), findsOneWidget);
-      });
-    });
-
     testWidgets('should display only task date', (tester) async {
       await tester.runAsync(() async {
         final task = Task(
           name: 'Test Task',
-          date: '$currentYear-01-01',
+          dateStr: '$currentYear-01-01',
         );
 
         await tester.pumpWidget(
@@ -93,11 +70,11 @@ void main() {
       });
     });
 
-    testWidgets('should display task date with year', (tester) async {
+    testWidgets('should display only task date with year', (tester) async {
       await tester.runAsync(() async {
         final task = Task(
           name: 'Test Task',
-          date: '${currentYear + 1}-01-01',
+          dateStr: '${currentYear + 1}-01-01',
         );
 
         await tester.pumpWidget(
@@ -116,54 +93,32 @@ void main() {
           find.text('For the January 1, ${currentYear + 1}'),
           findsOneWidget,
         );
-      });
-    });
-
-    // This shouldn't happen, but it's here just in case
-    testWidgets('should display only task reminder', (tester) async {
-      await tester.runAsync(() async {
-        final task = Task(
-          name: 'Test Task',
-          reminder: '12:00',
-        );
-
-        await tester.pumpWidget(
-          MyAppWrapper(
-            child: MaterialAppTest(
-              home: Scaffold(
-                body: TaskDetails(task: task),
-              ),
-            ),
-          ),
-        );
-
-        await tester.pumpAndSettle();
-
-        expect(find.text('For the January 1'), findsNothing);
-        expect(find.text('Reminder at 12:00'), findsOneWidget);
-      });
-    });
-
-    testWidgets('should display no date or reminder', (tester) async {
-      await tester.runAsync(() async {
-        final task = Task(
-          name: 'Test Task',
-        );
-
-        await tester.pumpWidget(
-          MyAppWrapper(
-            child: MaterialAppTest(
-              home: Scaffold(
-                body: TaskDetails(task: task),
-              ),
-            ),
-          ),
-        );
-
-        await tester.pumpAndSettle();
-
-        expect(find.text('For the January 1'), findsNothing);
         expect(find.text('Reminder at 12:00'), findsNothing);
+      });
+    });
+
+    testWidgets('should display task date and reminder', (tester) async {
+      await tester.runAsync(() async {
+        final task = Task(
+          name: 'Test Task',
+          dateStr: '$currentYear-01-01',
+          reminderStr: '12:00',
+        );
+
+        await tester.pumpWidget(
+          MyAppWrapper(
+            child: MaterialAppTest(
+              home: Scaffold(
+                body: TaskDetails(task: task),
+              ),
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        expect(find.text('For the January 1'), findsOneWidget);
+        expect(find.text('Reminder at 12:00'), findsOneWidget);
       });
     });
   });

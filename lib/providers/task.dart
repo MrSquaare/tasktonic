@@ -5,70 +5,72 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/task.dart';
 import '../repositories/task.dart';
-import '../utilities/date.dart';
 
-class TaskNotifier extends AsyncNotifier<Iterable<Task>> {
+class TaskNotifier extends AsyncNotifier<Map<dynamic, Task>> {
   TaskNotifier(this.repository) : super();
 
   final TaskRepository repository;
 
   @override
-  FutureOr<Iterable<Task>> build() {
-    return repository.list();
+  FutureOr<Map<dynamic, Task>> build() {
+    return repository.map();
   }
 
-  Future<int> createTask(Task task) async {
-    late int index;
-
+  Future<void> createTask(Task task) async {
     state = await AsyncValue.guard(() async {
-      index = await repository.create(task);
+      await repository.create(task);
 
-      return repository.list();
+      return repository.map();
     });
-
-    return index;
   }
 
-  Future<void> toggleTask(int index, Task task) async {
+  Future<void> toggleTask(String id, Task task) async {
     state = await AsyncValue.guard(() async {
       task.toggle();
 
-      await repository.update(index, task);
+      await repository.update(id, task);
 
-      return repository.list();
+      return repository.map();
     });
   }
 
-  Future<void> updateTask(int index, Task task) async {
+  Future<void> updateTask(String id, Task task) async {
     state = await AsyncValue.guard(() async {
-      await repository.update(index, task);
+      await repository.update(id, task);
 
-      return repository.list();
+      return repository.map();
     });
   }
 
-  Future<void> deleteTask(int index) async {
+  Future<void> deleteTask(String id) async {
     state = await AsyncValue.guard(() async {
-      await repository.delete(index);
+      await repository.delete(id);
 
-      return repository.list();
+      return repository.map();
     });
   }
 
-  Future<void> createTaskNotification(int index, Task task) async {
-    final date = dateStringToDateTime(task.date);
-    final reminder = timeStringToDateTime(task.reminder);
+  Future<void> createTaskNotification(Task task) async {
+    final date = task.date;
+    final reminder = task.reminder;
 
-    if (date == null || reminder == null) return;
+    if (reminder == null) return;
+
+    final localTimezone = DateTime.now().timeZoneName;
 
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: index,
+        id: task.id.hashCode,
         channelKey: 'reminder_channel',
         title: task.name,
         body: task.description,
         category: NotificationCategory.Reminder,
         wakeUpScreen: true,
+        payload: {
+          'id': task.id,
+          'reminder': task.reminderStr,
+          'rrule': task.rrule?.toString(),
+        },
       ),
       schedule: NotificationCalendar(
         year: date.year,
@@ -76,17 +78,17 @@ class TaskNotifier extends AsyncNotifier<Iterable<Task>> {
         day: date.day,
         hour: reminder.hour,
         minute: reminder.minute,
-        timeZone: reminder.timeZoneName,
+        timeZone: localTimezone,
       ),
     );
   }
 
-  Future<void> cancelTaskNotification(int index) async {
-    await AwesomeNotifications().cancel(index);
+  Future<void> cancelTaskNotification(String id) async {
+    await AwesomeNotifications().cancel(id.hashCode);
   }
 }
 
-final taskProvider = AsyncNotifierProvider<TaskNotifier, Iterable<Task>>(
+final taskProvider = AsyncNotifierProvider<TaskNotifier, Map<dynamic, Task>>(
   () {
     return TaskNotifier(TaskRepository());
   },

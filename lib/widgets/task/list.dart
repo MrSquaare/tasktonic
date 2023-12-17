@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 import '../../models/task.dart';
-import '../../utilities/date.dart';
 
-typedef TaskListItemToggle = void Function(int index, Task task);
-typedef TaskListItemNavigate = void Function(int index, Task task);
+typedef TaskListItemToggle = void Function(Task task);
+typedef TaskListItemNavigate = void Function(Task task);
 
 class TaskList extends StatelessWidget {
   const TaskList({
@@ -15,21 +14,29 @@ class TaskList extends StatelessWidget {
     required this.tasks,
     this.onToggle,
     this.onNavigate,
+    this.noTaskMessage = 'No task found',
   });
 
   final Iterable<Task> tasks;
   final TaskListItemToggle? onToggle;
   final TaskListItemNavigate? onNavigate;
+  final String noTaskMessage;
 
   @override
   Widget build(BuildContext context) {
+    if (tasks.isEmpty) {
+      return Center(
+        child: Text(noTaskMessage),
+      );
+    }
+
     return ListView(
       children: tasks.mapIndexed((index, task) {
-        final date = dateStringToDateTime(task.date);
-        final dateFormat = date != null && date.year == DateTime.now().year
+        final date = task.date;
+        final dateFormat = date.year == DateTime.now().year
             ? DateFormat.MMMd(context.locale.toString())
             : DateFormat.yMMMd(context.locale.toString());
-        final reminder = timeStringToDateTime(task.reminder);
+        final reminder = task.reminder;
         final reminderFormat = DateFormat.Hm(context.locale.toString());
 
         return ListTile(
@@ -40,31 +47,40 @@ class TaskList extends StatelessWidget {
           ),
           title: <Widget>[
             Text(task.name),
-            if (date != null || reminder != null)
-              <Widget>[
-                if (date != null)
-                  Chip(
-                    avatar: const Icon(Icons.calendar_month),
-                    label: Text(dateFormat.format(date)),
-                    backgroundColor: Colors.lightBlue,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: const EdgeInsets.all(0),
-                  ),
-                if (reminder != null)
-                  Chip(
-                    avatar: const Icon(Icons.notifications),
-                    label: Text(reminderFormat.format(reminder)),
-                    backgroundColor: Colors.lightBlue,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: const EdgeInsets.all(0),
-                  )
-              ]
-                  .toRow(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    separator: const SizedBox(width: 4),
-                  )
-                  .padding(top: 4),
+            <Widget?>[
+              Chip(
+                avatar: const Icon(
+                  Icons.calendar_month,
+                  color: Colors.white,
+                ),
+                label: Text(dateFormat.format(date)),
+                labelStyle: const TextStyle(color: Colors.white),
+                backgroundColor: Colors.blue,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                padding: const EdgeInsets.all(0),
+              ),
+              (reminder != null)
+                  ? Chip(
+                      avatar: const Icon(
+                        Icons.notifications,
+                        color: Colors.white,
+                      ),
+                      label: Text(reminderFormat.format(reminder)),
+                      labelStyle: const TextStyle(color: Colors.white),
+                      backgroundColor: Colors.blue,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.all(0),
+                    )
+                  : null,
+            ]
+                .whereNotNull()
+                .toList()
+                .toWrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  alignment: WrapAlignment.start,
+                  spacing: 4.0,
+                )
+                .padding(top: 4),
           ].toColumn(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -75,10 +91,10 @@ class TaskList extends StatelessWidget {
           ),
           tileColor: index % 2 == 1 ? Colors.grey[200] : null,
           onTap: () {
-            if (onToggle != null) onToggle!(index, task);
+            if (onToggle != null) onToggle!(task);
           },
           onLongPress: () {
-            if (onNavigate != null) onNavigate!(index, task);
+            if (onNavigate != null) onNavigate!(task);
           },
         );
       }).toList(),

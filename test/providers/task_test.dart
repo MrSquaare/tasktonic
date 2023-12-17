@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:awesome_notifications/awesome_notifications_platform_interface.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:mockito/mockito.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:tasktonic/models/adapters.dart';
 import 'package:tasktonic/models/task.dart';
 import 'package:tasktonic/providers/task.dart';
 
@@ -51,8 +51,7 @@ void main() {
   setUpAll(() async {
     testDirectory = getTestDirectory();
 
-    Hive.registerAdapter(TaskStatusAdapter());
-    Hive.registerAdapter(TaskAdapter());
+    registerAdapters();
     Hive.init(testDirectory!.path);
   });
 
@@ -85,13 +84,13 @@ void main() {
     'Should have one task',
     () async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Task 1',
-          description: 'Description 1',
-        ),
+      final task = Task(
+        name: 'Task 1',
+        description: 'Description 1',
+        dateStr: '2021-01-01',
       );
+
+      await box.put(task.id, task);
 
       final container = ProviderContainer();
       final tasks = container.read(taskProvider);
@@ -112,6 +111,7 @@ void main() {
         Task(
           name: 'Task 1',
           description: 'Description 1',
+          dateStr: '2021-01-01',
         ),
       );
 
@@ -119,6 +119,8 @@ void main() {
       expect(box.values.first.name, 'Task 1');
       expect(box.values.first.description, 'Description 1');
       expect(box.values.first.status, TaskStatus.todo);
+      expect(box.values.first.dateStr, '2021-01-01');
+      expect(box.values.first.date, DateTime(2021, 1, 1));
     },
   );
 
@@ -126,25 +128,27 @@ void main() {
     'Should toggle a task',
     () async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Task 1',
-          description: 'Description 1',
-        ),
+      final task = Task(
+        name: 'Task 1',
+        description: 'Description 1',
+        dateStr: '2021-01-01',
       );
+
+      await box.put(task.id, task);
 
       expect(box.values.first.status, TaskStatus.todo);
 
       final container = ProviderContainer();
       final taskNotifier = container.read(taskProvider.notifier);
 
-      await taskNotifier.toggleTask(0, box.values.elementAt(0));
+      await taskNotifier.toggleTask(task.id, task);
 
       expect(box.length, 1);
       expect(box.values.first.name, 'Task 1');
       expect(box.values.first.description, 'Description 1');
       expect(box.values.first.status, TaskStatus.done);
+      expect(box.values.first.dateStr, '2021-01-01');
+      expect(box.values.first.date, DateTime(2021, 1, 1));
     },
   );
 
@@ -152,13 +156,13 @@ void main() {
     'Should update a task',
     () async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Task 1',
-          description: 'Description 1',
-        ),
+      final task = Task(
+        name: 'Task 1',
+        description: 'Description 1',
+        dateStr: '2021-01-01',
       );
+
+      await box.put(task.id, task);
 
       expect(box.values.first.status, TaskStatus.todo);
 
@@ -166,18 +170,22 @@ void main() {
       final taskNotifier = container.read(taskProvider.notifier);
 
       await taskNotifier.updateTask(
-        0,
+        task.id,
         Task(
           name: 'Task A',
           description: 'Description A',
           status: TaskStatus.done,
+          dateStr: '2022-01-01',
         ),
       );
 
       expect(box.length, 1);
+      expect(box.values.first.id, task.id);
       expect(box.values.first.name, 'Task A');
       expect(box.values.first.description, 'Description A');
       expect(box.values.first.status, TaskStatus.done);
+      expect(box.values.first.dateStr, '2022-01-01');
+      expect(box.values.first.date, DateTime(2022, 1, 1));
     },
   );
 
@@ -185,18 +193,18 @@ void main() {
     'Should delete a task',
     () async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Task 1',
-          description: 'Description 1',
-        ),
+      final task = Task(
+        name: 'Task 1',
+        description: 'Description 1',
+        dateStr: '2021-01-01',
       );
+
+      await box.put(task.id, task);
 
       final container = ProviderContainer();
       final taskNotifier = container.read(taskProvider.notifier);
 
-      await taskNotifier.deleteTask(0);
+      await taskNotifier.deleteTask(task.id);
 
       expect(box.length, 0);
     },
@@ -206,23 +214,22 @@ void main() {
     final container = ProviderContainer();
     final taskNotifier = container.read(taskProvider.notifier);
 
-    const index = 0;
     final task = Task(
       name: 'Test Task',
       description: 'This is a test task',
-      date: '2022-02-01',
-      reminder: '10:00',
+      dateStr: '2021-01-01',
+      reminderStr: '10:00',
     );
 
-    taskNotifier.createTaskNotification(index, task);
+    taskNotifier.createTaskNotification(task);
 
-    final parsedTimeZoneName = DateFormat('').parse('').timeZoneName;
+    final localTimezone = DateTime.now().timeZoneName;
 
     verify(
       mock.createNotification(
         content: argThat(
           isA<NotificationContent>()
-              .having((c) => c.id, 'id', index)
+              .having((c) => c.id, 'id', task.id.hashCode)
               .having((c) => c.channelKey, 'channelKey', 'reminder_channel')
               .having((c) => c.title, 'title', task.name)
               .having((c) => c.body, 'body', task.description)
@@ -236,15 +243,15 @@ void main() {
         ),
         schedule: argThat(
           isA<NotificationCalendar>()
-              .having((c) => c.year, 'year', 2022)
-              .having((c) => c.month, 'month', 2)
+              .having((c) => c.year, 'year', 2021)
+              .having((c) => c.month, 'month', 1)
               .having((c) => c.day, 'day', 1)
               .having((c) => c.hour, 'hour', 10)
               .having((c) => c.minute, 'minute', 0)
               .having(
                 (c) => c.timeZone,
                 'timeZone',
-                parsedTimeZoneName,
+                localTimezone,
               ),
           named: 'schedule',
         ),
@@ -256,14 +263,12 @@ void main() {
     final container = ProviderContainer();
     final taskNotifier = container.read(taskProvider.notifier);
 
-    const index = 0;
-
-    taskNotifier.cancelTaskNotification(index);
+    taskNotifier.cancelTaskNotification('0');
 
     verify(
       mock.cancel(
         argThat(
-          equals(index),
+          equals('0'.hashCode),
         ),
       ),
     ).called(1);

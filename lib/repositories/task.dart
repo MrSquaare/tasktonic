@@ -5,23 +5,29 @@ import '../models/task.dart';
 class TaskRepository {
   final Box<Task> _box = Hive.box<Task>('tasks');
 
-  Iterable<Task> list() {
-    return _box.values;
+  Map<dynamic, Task> map() {
+    return _box.toMap();
   }
 
-  Future<int> create(Task task) async {
-    return _box.add(task);
+  Future<void> create(Task task) async {
+    return _box.put(task.id, task);
   }
 
-  Task? read(int index) {
-    return _box.getAt(index);
+  Task? read(String id) {
+    return _box.get(id);
   }
 
-  Future<void> update(int index, Task task) async {
-    return _box.putAt(index, task);
+  Future<void> update(String id, Task task) async {
+    if (!_box.containsKey(id)) throw ArgumentError('Task not found');
+
+    task.id = id;
+
+    return _box.put(id, task);
   }
 
-  Future<void> delete(int index) async {
-    return _box.deleteAt(index);
+  Future<void> delete(String id) async {
+    if (!_box.containsKey(id)) throw ArgumentError('Task not found');
+
+    return _box.delete(id);
   }
 }

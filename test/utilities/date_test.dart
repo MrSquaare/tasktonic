@@ -2,57 +2,41 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tasktonic/utilities/date.dart';
 
 void main() {
-  group('dateTimeToDateString', () {
-    test('Should returns null when given null', () {
-      expect(dateTimeToDateString(null), null);
+  group('DateUtilities', () {
+    group('formatDate', () {
+      test('Should returns formatted date string', () {
+        final dateTime = DateTime(2022, 12, 31);
+        const dateString = '2022-12-31';
+
+        expect(DateUtilities.formatDate(dateTime), dateString);
+      });
     });
 
-    test('Should returns formatted date string when given a valid date time',
-        () {
-      final dateTime = DateTime(2022, 12, 31);
-      const dateString = '2022-12-31';
+    group('formatTime', () {
+      test('Should returns formatted time string', () {
+        final dateTime = DateTime(2022, 12, 31, 23, 59);
+        const timeString = '23:59';
 
-      expect(dateTimeToDateString(dateTime), dateString);
-    });
-  });
-
-  group('dateStringToDateTime', () {
-    test('Should returns null when given null', () {
-      expect(dateStringToDateTime(null), null);
+        expect(DateUtilities.formatTime(dateTime), timeString);
+      });
     });
 
-    test('Should returns date time when given a valid date string', () {
-      const dateString = '2022-12-31';
-      final dateTime = DateTime(2022, 12, 31);
+    group('parseDate', () {
+      test('Should returns date time', () {
+        const dateString = '2022-12-31';
+        final dateTime = DateTime(2022, 12, 31);
 
-      expect(dateStringToDateTime(dateString), dateTime);
-    });
-  });
-
-  group('dateTimeToTimeString', () {
-    test('Should returns null when given null', () {
-      expect(dateTimeToTimeString(null), null);
+        expect(DateUtilities.parseDate(dateString), dateTime);
+      });
     });
 
-    test('Should returns formatted time string when given a valid date time',
-        () {
-      final dateTime = DateTime(2022, 12, 31, 23, 59);
-      const timeString = '23:59';
+    group('parseTime', () {
+      test('Should returns date time', () {
+        const timeString = '23:59';
+        final dateTime = DateTime(1970, 1, 1, 23, 59);
 
-      expect(dateTimeToTimeString(dateTime), timeString);
-    });
-  });
-
-  group('timeStringToDateTime', () {
-    test('Should returns null when given null', () {
-      expect(timeStringToDateTime(null), null);
-    });
-
-    test('Should returns date time when given a valid time string', () {
-      const timeString = '23:59';
-      final dateTime = DateTime(1970, 1, 1, 23, 59);
-
-      expect(timeStringToDateTime(timeString), dateTime);
+        expect(DateUtilities.parseTime(timeString), dateTime);
+      });
     });
   });
 }

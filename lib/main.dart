@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -23,13 +24,13 @@ Future<void> setup() async {
         channelDescription: 'Reminder notifications',
         defaultColor: Colors.blue,
         ledColor: Colors.white,
-      )
+      ),
     ],
     channelGroups: [
       NotificationChannelGroup(
         channelGroupKey: 'general_channel_group',
         channelGroupName: 'General',
-      )
+      ),
     ],
     debug: kDebugMode,
   );
@@ -44,7 +45,7 @@ Future<void> setup() async {
 Future<void> main() async {
   await setup();
 
-  final androidInfo = await getAndroidInfo();
+  final androidInfo = await getAndroidInfo(DeviceInfoPlugin());
   final perAppLocale = hasPerAppLocale(androidInfo);
 
   runApp(

@@ -9,26 +9,30 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tasktonic/models/task.dart';
 import 'package:tasktonic/pages/home.dart';
 import 'package:tasktonic/providers/task.dart';
+import 'package:tasktonic/utilities/date.dart';
 import 'package:tasktonic/wrapper.dart';
 
 import '../__helpers__/widget.dart';
 
-class MockTaskNotifier extends AsyncNotifier<Iterable<Task>>
+class MockTaskNotifier extends AsyncNotifier<Map<dynamic, Task>>
     with Mock
     implements TaskNotifier {
   @override
-  FutureOr<Iterable<Task>> build() {
+  FutureOr<Map<dynamic, Task>> build() {
     return super.noSuchMethod(
       Invocation.method(
         #build,
         [],
       ),
-      returnValue: Future<Iterable<Task>>.value(<Task>[]),
+      returnValue: Future<Map<dynamic, Task>>.value(<dynamic, Task>{}),
     );
   }
 }
 
 void main() {
+  final currentDate = DateTime.now();
+  final currentDateStr = DateUtilities.formatDate(currentDate);
+
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -42,7 +46,14 @@ void main() {
       final taskNotifier = MockTaskNotifier();
 
       when(taskNotifier.build()).thenAnswer((_) async {
-        return Future.value([Task(name: 'Task Test')]);
+        return Future.value(
+          {
+            '0': Task(
+              name: 'Task Test',
+              dateStr: currentDateStr,
+            ),
+          },
+        );
       });
 
       final taskProviderOverride = taskProvider.overrideWith(
@@ -60,8 +71,8 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expectLater(find.byType(ListTile), findsOneWidget);
-      expectLater(find.text('Task Test'), findsOneWidget);
+      expect(find.byType(ListTile), findsOneWidget);
+      expect(find.text('Task Test'), findsOneWidget);
     });
   });
 
@@ -72,7 +83,7 @@ void main() {
       when(taskNotifier.build()).thenAnswer((_) async {
         await Future.delayed(const Duration(seconds: 1));
 
-        return [];
+        return {};
       });
 
       final taskProviderOverride = taskProvider.overrideWith(
@@ -121,5 +132,3 @@ void main() {
     });
   });
 }
-
-class TaskProvider {}

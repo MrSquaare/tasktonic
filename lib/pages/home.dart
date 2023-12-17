@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 import '../providers/task.dart';
-import '../widgets/task/list.dart';
+import '../widgets/task/calendar.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -30,17 +30,15 @@ class HomePage extends ConsumerWidget {
       ),
       body: tasks.when(
         data: (data) {
-          if (data.isEmpty) {
-            return Text('home.no_task'.tr()).center();
-          }
+          return TaskCalendar(
+            tasks: data.values,
+            onToggle: (task) {
+              final provider = ref.read(taskProvider.notifier);
 
-          return TaskList(
-            tasks: data,
-            onToggle: (index, task) {
-              ref.read(taskProvider.notifier).toggleTask(index, task);
+              provider.toggleTask(task.id, task);
             },
-            onNavigate: (index, task) {
-              context.push('/task/$index/details');
+            onNavigate: (task) {
+              context.push('/task/${task.id}/details');
             },
           );
         },

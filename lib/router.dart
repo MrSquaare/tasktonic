@@ -3,9 +3,8 @@ import 'package:go_router/go_router.dart';
 
 import 'pages/home.dart';
 import 'pages/settings.dart';
-import 'screens/add_task.dart';
 import 'screens/delete_task.dart';
-import 'screens/edit_task.dart';
+import 'screens/add_edit_task.dart';
 import 'screens/language_settings.dart';
 import 'screens/main.dart';
 import 'screens/task_details.dart';
@@ -42,15 +41,13 @@ GoRouter createRouter() {
                 path: 'task/:id/details',
                 pageBuilder: (context, state) {
                   final taskId = state.pathParameters['id']!;
-                  final taskIndex = int.parse(taskId);
 
                   return ModalBottomSheetPage(
-                    builder: (context) =>
-                        TaskDetailsScreen(taskIndex: taskIndex),
+                    builder: (context) => TaskDetailsScreen(taskId: taskId),
                     isScrollControlled: false,
                   );
                 },
-              )
+              ),
             ],
           ),
           GoRoute(
@@ -77,7 +74,7 @@ GoRouter createRouter() {
         parentNavigatorKey: rootNavigatorKey,
         path: '/task/add',
         builder: (context, state) {
-          return AddTaskScreen();
+          return AddEditTaskScreen();
         },
       ),
       GoRoute(
@@ -85,9 +82,8 @@ GoRouter createRouter() {
         path: '/task/:id/edit',
         builder: (context, state) {
           final taskId = state.pathParameters['id']!;
-          final taskIndex = int.parse(taskId);
 
-          return EditTaskScreen(taskIndex: taskIndex);
+          return AddEditTaskScreen(taskId: taskId);
         },
       ),
       GoRoute(
@@ -95,10 +91,9 @@ GoRouter createRouter() {
         path: '/task/:id/delete',
         pageBuilder: (context, state) {
           final taskId = state.pathParameters['id']!;
-          final taskIndex = int.parse(taskId);
 
           return DialogPage(
-            builder: (context) => DeleteTaskDialog(taskIndex: taskIndex),
+            builder: (context) => DeleteTaskDialog(taskId: taskId),
           );
         },
       ),

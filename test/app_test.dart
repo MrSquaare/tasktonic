@@ -21,6 +21,7 @@ import 'package:tasktonic/pages/settings.dart';
 import 'package:tasktonic/repositories/boxes.dart';
 import 'package:tasktonic/router.dart';
 import 'package:tasktonic/screens/language_settings.dart';
+import 'package:tasktonic/utilities/date.dart';
 import 'package:tasktonic/wrapper.dart';
 
 import '__helpers__/controller.dart';
@@ -28,6 +29,9 @@ import '__helpers__/mock.dart';
 import '__helpers__/utility.dart';
 
 void main() async {
+  final currentDate = DateTime.now();
+  final currentDateStr = DateUtilities.formatDate(currentDate);
+
   Directory? testDirectory;
 
   setUpAll(() async {
@@ -66,7 +70,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
     });
   });
 
@@ -78,7 +82,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.text('Test Task'), findsNothing);
     });
@@ -87,13 +91,13 @@ void main() async {
   testWidgets('Should have a task', (WidgetTester tester) async {
     await tester.runAsync(() async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Test Task',
-          description: 'Test Description',
-        ),
+      final task = Task(
+        name: 'Test Task',
+        description: 'Test Description',
+        dateStr: currentDateStr,
       );
+
+      await box.put(task.id, task);
 
       await tester.pumpWidget(
         const MyAppWrapper(
@@ -101,7 +105,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.byType(ListTile), findsOneWidget);
       expect(find.text('Test Task'), findsOneWidget);
@@ -118,7 +122,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.text('Test Task'), findsNothing);
 
@@ -153,7 +157,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.text('Test Task'), findsNothing);
 
@@ -170,7 +174,7 @@ void main() async {
       await tester.enterText(textFields.at(1), 'Test Description');
       await tester.tap(textFields.at(2));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('17'));
+      await tester.tap(find.text('${currentDate.day}'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('OK'));
       await tester.pumpAndSettle();
@@ -198,7 +202,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.text('Test Task'), findsNothing);
 
@@ -215,13 +219,13 @@ void main() async {
   testWidgets('Should toggle task', (WidgetTester tester) async {
     await tester.runAsync(() async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Test Task',
-          description: 'Test Description',
-        ),
+      final task = Task(
+        name: 'Test Task',
+        description: 'Test Description',
+        dateStr: currentDateStr,
       );
+
+      await box.put(task.id, task);
 
       await tester.pumpWidget(
         const MyAppWrapper(
@@ -229,7 +233,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byType(ListTile));
       await box.flush();
@@ -242,13 +246,13 @@ void main() async {
   testWidgets('Should show task details', (WidgetTester tester) async {
     await tester.runAsync(() async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Test Task',
-          description: 'Test Description',
-        ),
+      final task = Task(
+        name: 'Test Task',
+        description: 'Test Description',
+        dateStr: currentDateStr,
       );
+
+      await box.put(task.id, task);
 
       await tester.pumpWidget(
         const MyAppWrapper(
@@ -256,7 +260,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.byType(ListTile), findsOneWidget);
 
@@ -272,13 +276,13 @@ void main() async {
   testWidgets('Should hide task details', (WidgetTester tester) async {
     await tester.runAsync(() async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Test Task',
-          description: 'Test Description',
-        ),
+      final task = Task(
+        name: 'Test Task',
+        description: 'Test Description',
+        dateStr: currentDateStr,
       );
+
+      await box.put(task.id, task);
 
       await tester.pumpWidget(
         const MyAppWrapper(
@@ -286,7 +290,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.byType(ListTile), findsOneWidget);
 
@@ -309,13 +313,13 @@ void main() async {
   testWidgets('Should edit task', (WidgetTester tester) async {
     await tester.runAsync(() async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Test Task',
-          description: 'Test Description',
-        ),
+      final task = Task(
+        name: 'Test Task',
+        description: 'Test Description',
+        dateStr: currentDateStr,
       );
+
+      await box.put(task.id, task);
 
       await tester.pumpWidget(
         const MyAppWrapper(
@@ -323,7 +327,7 @@ void main() async {
         ),
       );
 
-      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
 
       expect(find.byType(ListTile), findsOneWidget);
 
@@ -360,17 +364,17 @@ void main() async {
     });
   });
 
-  testWidgets('Should add date and reminder to existing task',
+  testWidgets('Should add reminder to existing task',
       (WidgetTester tester) async {
     await tester.runAsync(() async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Test Task',
-          description: 'Test Description',
-        ),
+      final task = Task(
+        name: 'Test Task',
+        description: 'Test Description',
+        dateStr: currentDateStr,
       );
+
+      await box.put(task.id, task);
 
       await tester.pumpWidget(
         const MyAppWrapper(
@@ -378,7 +382,7 @@ void main() async {
         ),
       );
 
-      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
 
       expect(find.byType(ListTile), findsOneWidget);
 
@@ -396,12 +400,6 @@ void main() async {
 
       final textFields = find.byType(TextField);
 
-      await tester.tap(textFields.at(2));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('17'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('OK'));
-      await tester.pumpAndSettle();
       await tester.tap(textFields.at(3));
       await tester.pumpAndSettle();
       await tester.tap(find.text('12'));
@@ -418,16 +416,18 @@ void main() async {
     });
   });
 
-  testWidgets('Should cancel edit task', (WidgetTester tester) async {
+  testWidgets('Should add repeat to existing task',
+      (WidgetTester tester) async {
     await tester.runAsync(() async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Test Task',
-          description: 'Test Description',
-        ),
+      final task = Task(
+        name: 'Test Task',
+        description: 'Test Description',
+        dateStr: currentDateStr,
+        reminderStr: '12:00',
       );
+
+      await box.put(task.id, task);
 
       await tester.pumpWidget(
         const MyAppWrapper(
@@ -435,7 +435,55 @@ void main() async {
         ),
       );
 
-      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ListTile), findsOneWidget);
+
+      await longPress(tester, find.byType(ListTile));
+      await tester.pumpAndSettle();
+
+      final bottomSheet = find.byType(BottomSheet);
+      final bottomSheetButtons = find.descendant(
+        of: bottomSheet,
+        matching: find.byType(TextButton),
+      );
+
+      await tester.tap(bottomSheetButtons.at(0));
+      await tester.pumpAndSettle();
+
+      final checkbox = find.byType(Checkbox);
+
+      await tester.tap(checkbox);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Daily'));
+      await tester.tap(find.byType(TextButton).at(1));
+      await box.flush();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ListTile), findsOneWidget);
+      expect(find.text('Test Task'), findsNWidgets(2));
+      expect(find.byType(Chip), findsNWidgets(4));
+    });
+  });
+
+  testWidgets('Should cancel edit task', (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      final box = Hive.box<Task>('tasks');
+      final task = Task(
+        name: 'Test Task',
+        description: 'Test Description',
+        dateStr: currentDateStr,
+      );
+
+      await box.put(task.id, task);
+
+      await tester.pumpWidget(
+        const MyAppWrapper(
+          child: MyApp(),
+        ),
+      );
+
+      await tester.pumpAndSettle();
 
       expect(find.byType(ListTile), findsOneWidget);
 
@@ -466,13 +514,13 @@ void main() async {
   testWidgets('Should delete task', (WidgetTester tester) async {
     await tester.runAsync(() async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Test Task',
-          description: 'Test Description',
-        ),
+      final task = Task(
+        name: 'Test Task',
+        description: 'Test Description',
+        dateStr: currentDateStr,
       );
+
+      await box.put(task.id, task);
 
       await tester.pumpWidget(
         const MyAppWrapper(
@@ -480,7 +528,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.byType(ListTile), findsOneWidget);
 
@@ -518,13 +566,13 @@ void main() async {
   testWidgets('Should cancel delete task', (WidgetTester tester) async {
     await tester.runAsync(() async {
       final box = Hive.box<Task>('tasks');
-
-      await box.add(
-        Task(
-          name: 'Test Task',
-          description: 'Test Description',
-        ),
+      final task = Task(
+        name: 'Test Task',
+        description: 'Test Description',
+        dateStr: currentDateStr,
       );
+
+      await box.put(task.id, task);
 
       await tester.pumpWidget(
         const MyAppWrapper(
@@ -532,7 +580,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.byType(ListTile), findsOneWidget);
 
@@ -575,7 +623,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.settings));
       await tester.pumpAndSettle();
@@ -592,7 +640,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.settings));
       await tester.pumpAndSettle();
@@ -614,7 +662,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.settings));
       await tester.pumpAndSettle();
@@ -654,7 +702,7 @@ void main() async {
         ),
       );
 
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.settings));
       await tester.pumpAndSettle();
